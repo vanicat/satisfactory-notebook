@@ -72,7 +72,7 @@
 			"ingredients": [
 				{
 					"item": "Desc_AluminumIngot_C",
-					"amount": 15
+					"amount": 20
 				},
 				{
 					"item": "Desc_CopperIngot_C",
@@ -261,8 +261,8 @@
 			]
 		},
 		"Recipe_Alternate_CircuitBoard_1_C": {
-			"slug": "alternate-silicone-circuit-board",
-			"name": "Alternate: Silicone Circuit Board",
+			"slug": "alternate-silicon-circuit-board",
+			"name": "Alternate: Silicon Circuit Board",
 			"className": "Recipe_Alternate_CircuitBoard_1_C",
 			"alternate": true,
 			"time": 24,
@@ -646,7 +646,7 @@
 			"ingredients": [
 				{
 					"item": "Desc_AluminumPlateReinforced_C",
-					"amount": 2
+					"amount": 5
 				},
 				{
 					"item": "Desc_Motor_C",
@@ -866,16 +866,16 @@
 			"name": "Alternate: Electrode - Aluminum Scrap",
 			"className": "Recipe_Alternate_ElectroAluminumScrap_C",
 			"alternate": true,
-			"time": 2,
+			"time": 4,
 			"manualTimeMultiplier": 1,
 			"ingredients": [
 				{
 					"item": "Desc_AluminaSolution_C",
-					"amount": 3
+					"amount": 12
 				},
 				{
 					"item": "Desc_PetroleumCoke_C",
-					"amount": 1
+					"amount": 4
 				}
 			],
 			"forBuilding": false,
@@ -885,11 +885,11 @@
 			"products": [
 				{
 					"item": "Desc_AluminumScrap_C",
-					"amount": 8
+					"amount": 20
 				},
 				{
 					"item": "Desc_Water_C",
-					"amount": 2
+					"amount": 7
 				}
 			],
 			"producedIn": [
@@ -1038,11 +1038,11 @@
 				},
 				{
 					"item": "Desc_NitricAcid_C",
-					"amount": 15
+					"amount": 8
 				},
 				{
 					"item": "Desc_SulfuricAcid_C",
-					"amount": 15
+					"amount": 8
 				}
 			],
 			"forBuilding": false,
@@ -1056,7 +1056,7 @@
 				},
 				{
 					"item": "Desc_Water_C",
-					"amount": 18
+					"amount": 8
 				}
 			],
 			"producedIn": [
@@ -1204,7 +1204,7 @@
 			"name": "Alternate: Heat Exchanger",
 			"className": "Recipe_Alternate_HeatSink_1_C",
 			"alternate": true,
-			"time": 12,
+			"time": 6,
 			"manualTimeMultiplier": 1,
 			"ingredients": [
 				{
@@ -1213,7 +1213,7 @@
 				},
 				{
 					"item": "Desc_Rubber_C",
-					"amount": 4
+					"amount": 3
 				}
 			],
 			"forBuilding": false,
@@ -1223,7 +1223,7 @@
 			"products": [
 				{
 					"item": "Desc_AluminumPlateReinforced_C",
-					"amount": 2
+					"amount": 1
 				}
 			],
 			"producedIn": [
@@ -1301,8 +1301,8 @@
 			]
 		},
 		"Recipe_Alternate_HighSpeedConnector_C": {
-			"slug": "alternate-silicone-speed-connector",
-			"name": "Alternate: Silicone-Speed Connector",
+			"slug": "alternate-silicon-high-speed-connector",
+			"name": "Alternate: Silicon High-Speed Connector",
 			"className": "Recipe_Alternate_HighSpeedConnector_C",
 			"alternate": true,
 			"time": 40,
@@ -1468,20 +1468,20 @@
 			"name": "Alternate: Instant Plutonium Cell",
 			"className": "Recipe_Alternate_InstantPlutoniumCell_C",
 			"alternate": true,
-			"time": 60,
+			"time": 120,
 			"manualTimeMultiplier": 1,
 			"ingredients": [
 				{
 					"item": "Desc_NonFissibleUranium_C",
-					"amount": 75
+					"amount": 150
 				},
 				{
 					"item": "Desc_AluminumCasing_C",
-					"amount": 25
+					"amount": 50
 				},
 				{
 					"item": "Desc_NitrogenGas_C",
-					"amount": 25
+					"amount": 20
 				}
 			],
 			"forBuilding": false,
@@ -1491,7 +1491,7 @@
 			"products": [
 				{
 					"item": "Desc_PlutoniumCell_C",
-					"amount": 25
+					"amount": 20
 				}
 			],
 			"producedIn": [
@@ -1520,7 +1520,7 @@
 				},
 				{
 					"item": "Desc_Water_C",
-					"amount": 11
+					"amount": 6
 				}
 			],
 			"forBuilding": false,
@@ -1534,7 +1534,7 @@
 				},
 				{
 					"item": "Desc_Water_C",
-					"amount": 4
+					"amount": 5
 				}
 			],
 			"producedIn": [
@@ -1822,12 +1822,12 @@
 			"name": "Alternate: Plutonium Fuel Unit",
 			"className": "Recipe_Alternate_PlutoniumFuelUnit_C",
 			"alternate": true,
-			"time": 60,
+			"time": 120,
 			"manualTimeMultiplier": 1,
 			"ingredients": [
 				{
 					"item": "Desc_PlutoniumCell_C",
-					"amount": 10
+					"amount": 20
 				},
 				{
 					"item": "Desc_PressureConversionCube_C",
@@ -2067,7 +2067,7 @@
 		},
 		"Recipe_Alternate_RadioControlSystem_C": {
 			"slug": "alternate-radio-control-system",
-			"name": "Alternate: Radio control System",
+			"name": "Alternate: Radio Control System",
 			"className": "Recipe_Alternate_RadioControlSystem_C",
 			"alternate": true,
 			"time": 40,
@@ -2083,7 +2083,7 @@
 				},
 				{
 					"item": "Desc_AluminumCasing_C",
-					"amount": 45
+					"amount": 60
 				},
 				{
 					"item": "Desc_Rubber_C",
@@ -2384,16 +2384,16 @@
 			"name": "Alternate: Sloppy Alumina",
 			"className": "Recipe_Alternate_SloppyAlumina_C",
 			"alternate": true,
-			"time": 6,
+			"time": 3,
 			"manualTimeMultiplier": 1,
 			"ingredients": [
 				{
 					"item": "Desc_OreBauxite_C",
-					"amount": 15
+					"amount": 10
 				},
 				{
 					"item": "Desc_Water_C",
-					"amount": 15
+					"amount": 10
 				}
 			],
 			"forBuilding": false,
@@ -2403,7 +2403,7 @@
 			"products": [
 				{
 					"item": "Desc_AluminaSolution_C",
-					"amount": 18
+					"amount": 12
 				}
 			],
 			"producedIn": [
@@ -2667,8 +2667,8 @@
 			]
 		},
 		"Recipe_Alternate_TurboMotor_1_C": {
-			"slug": "alternate-turbo-rigour-motor",
-			"name": "Alternate: Turbo Rigour Motor",
+			"slug": "alternate-turbo-electric-motor",
+			"name": "Alternate: Turbo Electric Motor",
 			"className": "Recipe_Alternate_TurboMotor_1_C",
 			"alternate": true,
 			"time": 64,
@@ -2680,15 +2680,15 @@
 				},
 				{
 					"item": "Desc_ModularFrameLightweight_C",
-					"amount": 5
+					"amount": 9
 				},
 				{
 					"item": "Desc_ElectromagneticControlRod_C",
-					"amount": 7
+					"amount": 5
 				},
 				{
 					"item": "Desc_Rotor_C",
-					"amount": 9
+					"amount": 7
 				}
 			],
 			"forBuilding": false,
@@ -2710,12 +2710,12 @@
 			"name": "Alternate: Turbo Pressure Motor",
 			"className": "Recipe_Alternate_TurboPressureMotor_C",
 			"alternate": true,
-			"time": 16,
+			"time": 32,
 			"manualTimeMultiplier": 1,
 			"ingredients": [
 				{
 					"item": "Desc_Motor_C",
-					"amount": 2
+					"amount": 4
 				},
 				{
 					"item": "Desc_PressureConversionCube_C",
@@ -2723,11 +2723,11 @@
 				},
 				{
 					"item": "Desc_PackagedNitrogenGas_C",
-					"amount": 15
+					"amount": 24
 				},
 				{
 					"item": "Desc_Stator_C",
-					"amount": 6
+					"amount": 8
 				}
 			],
 			"forBuilding": false,
@@ -2737,7 +2737,7 @@
 			"products": [
 				{
 					"item": "Desc_MotorLightweight_C",
-					"amount": 1
+					"amount": 2
 				}
 			],
 			"producedIn": [
@@ -2780,12 +2780,12 @@
 			"name": "Alternate: Infused Uranium Cell",
 			"className": "Recipe_Alternate_UraniumCell_1_C",
 			"alternate": true,
-			"time": 8,
+			"time": 12,
 			"manualTimeMultiplier": 1,
 			"ingredients": [
 				{
-					"item": "Desc_UraniumPellet_C",
-					"amount": 2
+					"item": "Desc_OreUranium_C",
+					"amount": 5
 				},
 				{
 					"item": "Desc_Silica_C",
@@ -2793,11 +2793,11 @@
 				},
 				{
 					"item": "Desc_Sulfur_C",
-					"amount": 4
+					"amount": 5
 				},
 				{
 					"item": "Desc_HighSpeedWire_C",
-					"amount": 5
+					"amount": 15
 				}
 			],
 			"forBuilding": false,
@@ -2807,7 +2807,7 @@
 			"products": [
 				{
 					"item": "Desc_UraniumCell_C",
-					"amount": 3
+					"amount": 4
 				}
 			],
 			"producedIn": [
@@ -5352,16 +5352,16 @@
 			"name": "Heat Sink",
 			"className": "Recipe_HeatSink_C",
 			"alternate": false,
-			"time": 12,
+			"time": 8,
 			"manualTimeMultiplier": 1.5,
 			"ingredients": [
 				{
 					"item": "Desc_AluminumPlate_C",
-					"amount": 8
+					"amount": 5
 				},
 				{
 					"item": "Desc_CopperSheet_C",
-					"amount": 9
+					"amount": 3
 				}
 			],
 			"forBuilding": false,
@@ -5371,7 +5371,7 @@
 			"products": [
 				{
 					"item": "Desc_AluminumPlateReinforced_C",
-					"amount": 2
+					"amount": 1
 				}
 			],
 			"producedIn": [
@@ -6516,16 +6516,16 @@
 					"amount": 15
 				},
 				{
-					"item": "Desc_NitricAcid_C",
-					"amount": 3
+					"item": "Desc_Silica_C",
+					"amount": 5
 				},
 				{
-					"item": "Desc_SulfuricAcid_C",
+					"item": "Desc_NitricAcid_C",
 					"amount": 6
 				},
 				{
-					"item": "Desc_Silica_C",
-					"amount": 5
+					"item": "Desc_SulfuricAcid_C",
+					"amount": 3
 				}
 			],
 			"forBuilding": false,
@@ -6823,7 +6823,7 @@
 					"amount": 1
 				},
 				{
-					"item": "Desc_FluidCanister_C",
+					"item": "Desc_GasTank_C",
 					"amount": 1
 				}
 			],
@@ -7585,16 +7585,16 @@
 			"name": "Encased Plutonium Cell",
 			"className": "Recipe_PlutoniumCell_C",
 			"alternate": false,
-			"time": 6,
+			"time": 12,
 			"manualTimeMultiplier": 0.5,
 			"ingredients": [
 				{
 					"item": "Desc_PlutoniumPellet_C",
-					"amount": 1
+					"amount": 2
 				},
 				{
 					"item": "Desc_Cement_C",
-					"amount": 2
+					"amount": 4
 				}
 			],
 			"forBuilding": false,
@@ -7616,24 +7616,24 @@
 			"name": "Plutonium Fuel Rod",
 			"className": "Recipe_PlutoniumFuelRod_C",
 			"alternate": false,
-			"time": 120,
+			"time": 240,
 			"manualTimeMultiplier": 1,
 			"ingredients": [
 				{
 					"item": "Desc_PlutoniumCell_C",
-					"amount": 15
+					"amount": 30
 				},
 				{
 					"item": "Desc_SteelPlate_C",
-					"amount": 8
+					"amount": 18
 				},
 				{
 					"item": "Desc_ElectromagneticControlRod_C",
-					"amount": 3
+					"amount": 6
 				},
 				{
 					"item": "Desc_AluminumPlateReinforced_C",
-					"amount": 5
+					"amount": 10
 				}
 			],
 			"forBuilding": false,
@@ -7651,8 +7651,8 @@
 			]
 		},
 		"Recipe_Plutonium_C": {
-			"slug": "plutonium-pellets",
-			"name": "Plutonium Pellets",
+			"slug": "plutonium-pellet",
+			"name": "Plutonium Pellet",
 			"className": "Recipe_Plutonium_C",
 			"alternate": false,
 			"time": 60,
@@ -8464,7 +8464,7 @@
 			"ingredients": [
 				{
 					"item": "Desc_AluminumCasing_C",
-					"amount": 24
+					"amount": 32
 				},
 				{
 					"item": "Desc_CrystalOscillator_C",
@@ -12027,7 +12027,7 @@
 			"className": "Desc_AluminumCasing_C",
 			"name": "Aluminum Casing",
 			"sinkPoints": 393,
-			"description": "A versatile container casted from Aluminum Ingots.",
+			"description": "A versatile container cast from Aluminum Ingots.",
 			"stackSize": 200,
 			"energyValue": 0,
 			"radioactiveDecay": 0,
@@ -13115,7 +13115,7 @@
 			"className": "Desc_NitrogenGas_C",
 			"name": "Nitrogen Gas",
 			"sinkPoints": 10,
-			"description": "Nitrogen can be used in a variety of ways, such as metallurgy, cooling, and the production of Nitric Acid. On MASSAGE-2(A-B)b it can be extracted from underground gas wells.",
+			"description": "Nitrogen can be used in a variety of ways, such as metallurgy, cooling, and Nitric Acid production. On Massage-2(AB)b, it can be extracted from underground gas wells.",
 			"stackSize": 50000,
 			"energyValue": 0,
 			"radioactiveDecay": 0,
@@ -13285,7 +13285,7 @@
 			"className": "Desc_OreUranium_C",
 			"name": "Uranium",
 			"sinkPoints": 35,
-			"description": "Uranium is a radioactive element. \nUsed to produce Encased Uranium Cells for Nuclear Fuel Rods.\n\nCaution: Moderately Radioactive.",
+			"description": "Uranium is a radioactive element. \nUsed to produce Encased Uranium Cells for Uranium Fuel Rods.\n\nCaution: Moderately Radioactive.",
 			"stackSize": 100,
 			"energyValue": 0,
 			"radioactiveDecay": 15,
@@ -13508,7 +13508,7 @@
 			"sinkPoints": 129620,
 			"description": "Used as fuel for the Nuclear Power Plant.\n\nCaution: Produces Nuclear Plutonium Waste when consumed.\nCaution: HIGHLY Radioactive.",
 			"stackSize": 50,
-			"energyValue": 375000,
+			"energyValue": 1500000,
 			"radioactiveDecay": 120,
 			"liquid": false,
 			"fluidColor": {
@@ -13519,9 +13519,9 @@
 			}
 		},
 		"Desc_PlutoniumPellet_C": {
-			"slug": "plutonium-pellets",
+			"slug": "plutonium-pellet",
 			"className": "Desc_PlutoniumPellet_C",
-			"name": "Plutonium Pellets",
+			"name": "Plutonium Pellet",
 			"sinkPoints": 0,
 			"description": "Produced in the Particle Accelerator through conversion of Non-fissile Uranium.\nUsed to produce Encased Plutonium Cells for Plutonium Fuel Rods.\n\nPower Usage: 250-750 MW (500 MW average).\nCaution: Moderately Radioactive.",
 			"stackSize": 100,
@@ -14033,27 +14033,10 @@
 			"className": "Desc_UraniumCell_C",
 			"name": "Encased Uranium Cell",
 			"sinkPoints": 192,
-			"description": "Uranium Cells are produced by encasing refined Uranium. \nUsed to produce Uranium Fuel Rods for Nuclear Power production.\n\nCaution: Mildly Radioactive.",
+			"description": "Uranium Cells are produced from Uranium Ore. \nUsed to produce Uranium Fuel Rods for Nuclear Power production.\n\nCaution: Mildly Radioactive.",
 			"stackSize": 200,
 			"energyValue": 0,
 			"radioactiveDecay": 0.5,
-			"liquid": false,
-			"fluidColor": {
-				"r": 0,
-				"g": 0,
-				"b": 0,
-				"a": 0
-			}
-		},
-		"Desc_UraniumPellet_C": {
-			"slug": "uranium-pellet",
-			"className": "Desc_UraniumPellet_C",
-			"name": "Uranium Pellet",
-			"sinkPoints": 87,
-			"description": "Produced in the Refinery, Uranium Pellets are purified and cast from Uranium Ore. \nPrimarily used to make Uranium Cells.\n\nCaution: Moderately radioactive.",
-			"stackSize": 200,
-			"energyValue": 0,
-			"radioactiveDecay": 7.5,
 			"liquid": false,
 			"fluidColor": {
 				"r": 0,
@@ -17520,8 +17503,8 @@
 		},
 		"Schematic_8-3_C": {
 			"className": "Schematic_8-3_C",
-			"name": "Hoverpack",
-			"slug": "hoverpack",
+			"name": "Hover Pack",
+			"slug": "hover-pack",
 			"tier": 8,
 			"cost": [
 				{
@@ -17780,8 +17763,8 @@
 		},
 		"Schematic_Alternate_CircuitBoard1_C": {
 			"className": "Schematic_Alternate_CircuitBoard1_C",
-			"name": "Alternate: Silicone Circuit Board",
-			"slug": "alternate-silicone-circuit-board",
+			"name": "Alternate: Silicon Circuit Board",
+			"slug": "alternate-silicon-circuit-board",
 			"tier": 5,
 			"cost": [],
 			"unlock": {
@@ -18141,8 +18124,8 @@
 		},
 		"Schematic_Alternate_DilutedPackagedFuel_C": {
 			"className": "Schematic_Alternate_DilutedPackagedFuel_C",
-			"name": "Alternate: Diluted Packaged Fuel ",
-			"slug": "alternate-diluted-packaged-fuel-",
+			"name": "Alternate: Diluted Packaged Fuel",
+			"slug": "alternate-diluted-packaged-fuel",
 			"tier": 0,
 			"cost": [],
 			"unlock": {
@@ -18460,8 +18443,8 @@
 		},
 		"Schematic_Alternate_HighSpeedConnector_C": {
 			"className": "Schematic_Alternate_HighSpeedConnector_C",
-			"name": "Alternate: Silicone High-Speed Connector",
-			"slug": "alternate-silicone-high-speed-connector",
+			"name": "Alternate: Silicon High-Speed Connector",
+			"slug": "alternate-silicon-high-speed-connector",
 			"tier": 5,
 			"cost": [],
 			"unlock": {
@@ -19010,8 +18993,8 @@
 		},
 		"Schematic_Alternate_RadioControlUnit1_C": {
 			"className": "Schematic_Alternate_RadioControlUnit1_C",
-			"name": "Alternate: Radio Connetion Unit",
-			"slug": "alternate-radio-connetion-unit",
+			"name": "Alternate: Radio Connection Unit",
+			"slug": "alternate-radio-connection-unit",
 			"tier": 7,
 			"cost": [],
 			"unlock": {
@@ -20071,7 +20054,7 @@
 		"Desc_CeilingLight_C": {
 			"slug": "ceiling-light",
 			"name": "Ceiling Light",
-			"description": "Can be placed on ceilings to light up indoor factory spaces.\n\nLight colour and intensity can be modified.\nAllows up to two Power Line connections.",
+			"description": "Can be placed on ceilings to light up indoor factory spaces.\n\nLight color and intensity can be modified.\nAllows up to two Power Line connections.",
 			"categories": [
 				"SC_Lights_C"
 			],
@@ -20395,7 +20378,7 @@
 		"Desc_ConveyorPoleStackable_C": {
 			"slug": "stackable-conveyor-pole",
 			"name": "Stackable Conveyor Pole",
-			"description": "Support for converyor belts. Can be stacked on other stackable supports.",
+			"description": "Support for conveyor belts. Can be stacked on other stackable supports.",
 			"categories": [],
 			"buildMenuPriority": 0,
 			"className": "Desc_ConveyorPoleStackable_C",
@@ -20453,7 +20436,7 @@
 		"Desc_DroneStation_C": {
 			"slug": "drone-port",
 			"name": "Drone Port",
-			"description": "Drones Port. Used to set up Drone routes. Also acts as loading/unloading and docking station.",
+			"description": "Drone Ports can have one other Port assigned as their transport destination.\nEach Drone Port can contain a single Drone, which transports available input back and forth between its home and destination Ports.\n\nThe Drone Port interface provides delivery details and allows management of Port connections.",
 			"categories": [
 				"SC_Vehicles_C"
 			],
@@ -20516,7 +20499,7 @@
 		"Desc_FloodlightPole_C": {
 			"slug": "flood-light-tower",
 			"name": "Flood Light Tower",
-			"description": "A tall light tower, specifically designed for illuminating large or outdoor spaces.\n\nLight colour and intensity can be modified.\nAllows up to two Power Line connections.",
+			"description": "A tall light tower, specifically designed for illuminating large or outdoor spaces.\n\nLight color and intensity can be modified.\nAllows up to two Power Line connections.",
 			"categories": [
 				"SC_Lights_C"
 			],
@@ -20534,7 +20517,7 @@
 		"Desc_FloodlightWall_C": {
 			"slug": "wall-mounted-flood-light",
 			"name": "Wall Mounted Flood Light",
-			"description": "Can be attached to Walls and Foundations to illuminate large spaces.\n\nLight colour and intensity can be modified.\nAllows up to two Power Line connections.",
+			"description": "Can be attached to Walls and Foundations to illuminate large spaces.\n\nLight color and intensity can be modified.\nAllows up to two Power Line connections.",
 			"categories": [
 				"SC_Lights_C"
 			],
@@ -20671,7 +20654,7 @@
 		"Desc_FrackingSmasher_C": {
 			"slug": "resource-well-pressurizer",
 			"name": "Resource Well Pressurizer",
-			"description": "Can be placed on a Resource Well to activate it by pressurizing the underground resource.\nOnce actived, Resource Well Extractors can be placed on the surrounding sub-nodes to extract the resource.\nRequires Power. Overclocking increases the output potential of the entire Resource Well.",
+			"description": "Can be placed on a Resource Well to activate it by pressurizing the underground resource.\nOnce activated, Resource Well Extractors can be placed on the surrounding sub-nodes to extract the resource.\nRequires Power. Overclocking increases the output potential of the entire Resource Well.",
 			"categories": [
 				"SC_OilProduction_C"
 			],
@@ -20723,7 +20706,7 @@
 		"Desc_GeneratorCoal_C": {
 			"slug": "coal-generator",
 			"name": "Coal Generator",
-			"description": "Burns Coal to boil Water, the produced steam rotates turbines to generate electricty for the power grid.\nHas a Conveyor Belt and Pipe input, so both the Coal and Water supply can be automated.\n\nCaution: Always generates at the set clockspeed. Shuts down if fuel requirements are not met.",
+			"description": "Burns Coal to boil Water, the produced steam rotates turbines to generate electricity for the power grid.\nHas a Conveyor Belt and Pipe input, so both the Coal and Water supply can be automated.\n\nCaution: Always generates at the set clockspeed. Shuts down if fuel requirements are not met.",
 			"categories": [
 				"SC_Generators_C"
 			],
@@ -20761,7 +20744,7 @@
 		"Desc_GeneratorGeoThermal_C": {
 			"slug": "geothermal-generator",
 			"name": "Geothermal Generator",
-			"description": "Has to be built on a Geyser. Generates power.\n\nCaution: Power production is unstable.\n\n\nPower Production:\nImpure 50-150 MW (100 MW average)\nNormal 100-300 MW (200 MW average)\nPure 200-600 MW (400 MW average)",
+			"description": "Has to be built on a Geyser. Generates power.\n\nCaution: Power production fluctuates.\n\nPower Production:\nImpure 50-150 MW (100 MW average)\nNormal 100-300 MW (200 MW average)\nPure 200-600 MW (400 MW average)",
 			"categories": [
 				"SC_Generators_C"
 			],
@@ -20780,7 +20763,7 @@
 		"Desc_GeneratorNuclear_C": {
 			"slug": "nuclear-power-plant",
 			"name": "Nuclear Power Plant",
-			"description": "Consumes Nuclear Fuel Rods and Water to produce electricty for the power grid.\n\nProduces Nuclear Waste, which is extracted from the conveyor belt output.\n\nCaution: Always generates at the set clockspeed. Shuts down if fuel requirements are not met.",
+			"description": "Consumes Nuclear Fuel Rods and Water to produce electricity for the power grid.\n\nProduces Nuclear Waste, which is extracted from the conveyor belt output.\n\nCaution: Always generates at the set clockspeed. Shuts down if fuel requirements are not met.",
 			"categories": [
 				"SC_Generators_C"
 			],
@@ -20946,22 +20929,6 @@
 				"powerConsumption": 0,
 				"powerConsumptionExponent": 1.6
 			},
-			"size": {
-				"width": 0,
-				"length": 0,
-				"height": 0
-			}
-		},
-		"Desc_Mam_C": {
-			"slug": "mam",
-			"name": "MAM",
-			"description": "The Molecular Analysis Machine is used to analyse new and exotic materials found on alien planets.\nR&D will assist Pioneers through the MAM to turn any valuable data into usable research options and new technologies.",
-			"categories": [
-				"SC_Special_C"
-			],
-			"buildMenuPriority": 3,
-			"className": "Desc_Mam_C",
-			"metadata": {},
 			"size": {
 				"width": 0,
 				"length": 0,
@@ -22206,7 +22173,7 @@
 		"Desc_StreetLight_C": {
 			"slug": "street-light",
 			"name": "Street Light",
-			"description": "A small Street Light, perfect for lighting up factory pathways and roads.\n\nLight colour and intensity can be modified.\nAllows up to two Power Line connections.",
+			"description": "A small Street Light, perfect for lighting up factory pathways and roads.\n\nLight color and intensity can be modified.\nAllows up to two Power Line connections.",
 			"categories": [
 				"SC_Lights_C"
 			],
@@ -22802,7 +22769,7 @@
 		"Desc_WaterPump_C": {
 			"slug": "water-extractor",
 			"name": "Water Extractor",
-			"description": "Default extraction rate: 120m³ water per minute.\nHead Lift: 10 meters.\n(Allows fluids to be transported 10 meters upwards.)\n\nExtracts water from the body of water it is build on.\nNote that the water needs to be deep enough and that rivers do not commonly suffice.",
+			"description": "Default extraction rate: 120m³ water per minute.\nHead Lift: 10 meters.\n(Allows fluids to be transported 10 meters upwards.)\n\nExtracts water from the body of water it is built on.\nNote that the water needs to be deep enough and that rivers do not commonly suffice.",
 			"categories": [
 				"SC_OilProduction_C"
 			],
