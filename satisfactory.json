@@ -8191,12 +8191,12 @@
 			"name": "Alternate: Pure Aluminum Ingot",
 			"className": "Recipe_PureAluminumIngot_C",
 			"alternate": true,
-			"time": 20,
+			"time": 2,
 			"manualTimeMultiplier": 1,
 			"ingredients": [
 				{
 					"item": "Desc_AluminumScrap_C",
-					"amount": 18
+					"amount": 2
 				}
 			],
 			"forBuilding": false,
@@ -8206,7 +8206,7 @@
 			"products": [
 				{
 					"item": "Desc_AluminumIngot_C",
-					"amount": 9
+					"amount": 1
 				}
 			],
 			"producedIn": [
