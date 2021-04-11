@@ -16,7 +16,9 @@ import plotly.graph_objects as go
 from sqlalchemy.sql.expression import desc
 from utils import myround
 
-def myround(v, x = 0):
+STD_ROUND = 3
+
+def myround(v, x = STD_ROUND):
     try:
         return round(v, x)
     except TypeError:
@@ -613,14 +615,14 @@ class ResultOfProd:
         result = []
         for p in products:
             if p in self.available and p in self.needed:
-                qa = myround(self.available[p] * 1, 2)
-                qn = myround(self.needed[p] * 1, 2)
+                qa = myround(self.available[p])
+                qn = myround(self.needed[p])
                 result.append((qa-qn, f"{qa-qn} {p}: {qn} of {qa}"))
             elif p in self.available:
-                qa = myround(self.available[p] * 1, 2)
+                qa = myround(self.available[p])
                 result.append((qa, f"{qa} {p}: +{qa}"))
             else:
-                qn = myround(self.needed[p] * 1, 2)
+                qn = myround(self.needed[p])
                 result.append((-qn, f"{-qn} {p}: -{qn}"))
                 
         result.sort()
@@ -632,14 +634,14 @@ class ResultOfProd:
         result = []
         for p in products:
             if p in self.available and p in self.needed:
-                qa = myround(self.available[p] * 1)
-                qn = myround(self.needed[p] * 1)
+                qa = myround(self.available[p])
+                qn = myround(self.needed[p])
                 result.append((qa-qn, f"{qa-qn} {p}: {qn} of {qa}", p))
             elif p in self.available:
-                qa = myround(self.available[p] * 1)
+                qa = myround(self.available[p])
                 result.append((qa, f"{qa} {p}: +{qa}", p))
             else:
-                qn = myround(self.needed[p] * 1)
+                qn = myround(self.needed[p])
                 result.append((-qn, f"{-qn} {p}: -{qn}", p))
                 
         result.sort()
@@ -651,24 +653,24 @@ class ResultOfProd:
         for recipe, q in self._recipes.items():
             if q != 0:
                 if recipe in self.constructed:
-                    sts = f"{self.constructed[recipe]} of {myround(q, 2)} {all_recipes[recipe].producedIn} using {recipe}, reste {myround(q - self.constructed[recipe], 2)}"
+                    sts = f"{myround(self.constructed[recipe])} of {myround(q)} {all_recipes[recipe].producedIn} using {recipe}, reste {myround(q - self.constructed[recipe])}"
                     if self.constructed[recipe] >= q:
                         sts = '# ' + sts
                     result.append(sts)
                 else:
-                    result.append(f"{myround(q, 2)} {all_recipes[recipe].producedIn} using {recipe}")
+                    result.append(f"{myround(q)} {all_recipes[recipe].producedIn} using {recipe}")
         return result
     
     def recipes(self):
         for recipe, q in self._recipes.items():
             if q != 0:
                 if recipe in self.constructed:
-                    sts = f"{self.constructed[recipe]} of {myround(q, 2)} {all_recipes[recipe].producedIn} using {recipe}, reste {myround(q - self.constructed[recipe], 2)}"
+                    sts = f"{self.constructed[recipe]} of {myround(q)} {all_recipes[recipe].producedIn} using {recipe}, reste {myround(q - self.constructed[recipe])}"
                     if self.constructed[recipe] >= q:
                         sts = '# ' + sts
                     yield sts, recipe, q - self.constructed[recipe]
                 else:
-                    yield f"{myround(q, 2)} {all_recipes[recipe].producedIn} using {recipe}", recipe, q
+                    yield f"{myround(q)} {all_recipes[recipe].producedIn} using {recipe}", recipe, q
         return result
 
     def building(self):
