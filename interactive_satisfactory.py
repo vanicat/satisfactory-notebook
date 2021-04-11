@@ -30,6 +30,7 @@ recipes = Table('recipes', meta, autoload=True, autoload_with=engine)
 items = Table('items', meta, autoload=True, autoload_with=engine)
 recipe_ingredients = Table('recipe_ingredients', meta, autoload=True, autoload_with=engine)
 recipe_products = Table('recipe_products', meta, autoload=True, autoload_with=engine)
+buildings = Table('buildings', meta, autoload=True, autoload_with=engine)
 
 
 # In[5]:
@@ -880,3 +881,25 @@ def interactiveOfProduction(result, name):
 
 
 # %%
+def shopping_list(buildings_dict):
+    def add(dict1, k, value):
+        if k in dict1:
+            dict1[k] += value
+        else:
+            dict1[k] = value
+
+    shopping_list = {}
+    
+    for b, q in buildings_dict.items():
+        done, tot = q
+        request = select([buildings]).where(buildings.c.name == b)
+        recipe = engine.execute(request).fetchone()["recipe"]
+        request = select([items, recipe_ingredients])
+        request = request.where(recipe_ingredients.c.recipe == recipe)
+        request = request.where(recipe_ingredients.c.item == items.c.id)
+        result = engine.execute(request).fetchall()
+        for item in result:
+
+            add(shopping_list, item[items.c.name], (tot - done) * item[recipe_ingredients.c.amount])
+    
+    return shopping_list
