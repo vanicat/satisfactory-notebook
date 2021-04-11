@@ -4,7 +4,6 @@
 # In[1]:
 
 from ipywidgets.widgets.widget_box import VBox
-from sqlalchemy import create_engine, Table, select, MetaData, and_
 import math
 from IPython.display import display, Markdown, clear_output
 import ipywidgets as widgets
@@ -15,69 +14,14 @@ import random as rd
 import plotly.graph_objects as go
 from sqlalchemy.sql.expression import desc
 from utils import myround
+from satisfactory_db import SatisfactoryDb
 
-# In[3]: load satisfactory db
-
-
-meta = MetaData()
-engine = create_engine('sqlite:///satisfactory.db')
-
-
-# In[4]: reflect on it
-
-
-recipes = Table('recipes', meta, autoload=True, autoload_with=engine)
-items = Table('items', meta, autoload=True, autoload_with=engine)
-recipe_ingredients = Table('recipe_ingredients', meta, autoload=True, autoload_with=engine)
-recipe_products = Table('recipe_products', meta, autoload=True, autoload_with=engine)
-buildings = Table('buildings', meta, autoload=True, autoload_with=engine)
+db = SatisfactoryDb()
 
 
 # In[5]:
 
-def search_recipes(pattern):
-    request = recipes.select().where(recipes.c.name.like(f"%{pattern}%"))
-    result = engine.execute(request).fetchall()
-    return [ it[2] for it in result ]
-
-def search_items(pattern):
-    request = items.select().where(items.c.name.like(f"%{pattern}%"))
-    result = engine.execute(request).fetchall()
-    return [ it[2] for it in result ]
-
-def search_recipes_by_product(pattern):
-    request = select([recipes, recipe_products, items])
-    request = request.where(recipes.c.id == recipe_products.c.recipe)
-    request = request.where(recipe_products.c.item == items.c.id)
-    request = request.where(items.c.name == pattern)
-    result = engine.execute(request).fetchall()
-    return [ it[2] for it in result ]
-
-def search_recipes_by_ingredients(pattern):
-    request = select([recipes, recipe_ingredients, items])
-    request = request.where(recipes.c.id == recipe_ingredients.c.recipe)
-    request = request.where(recipe_ingredients.c.item == items.c.id)
-    request = request.where(items.c.name == pattern)
-    result = engine.execute(request).fetchall()
-    return [ it[2] for it in result ]
-
-def search_ingredients_by_recipes(pattern):
-    request = select([items, recipe_ingredients, recipes])
-    request = request.where(recipes.c.id == recipe_ingredients.c.recipe)
-    request = request.where(recipe_ingredients.c.item == items.c.id)
-    request = request.where(recipes.c.name == pattern)
-    result = engine.execute(request).fetchall()
-    return [ it[2] for it in result ]
-
-def search_products_by_recipes(pattern):
-    request = select([items, recipe_products, recipes])
-    request = request.where(recipes.c.id == recipe_products.c.recipe)
-    request = request.where(recipe_products.c.item == items.c.id)
-    request = request.where(recipes.c.name == pattern)
-    result = engine.execute(request).fetchall()
-    return [ it[2] for it in result ]
-
-def interactive_search(callback = None, search = search_items, add_buttons = []):
+def interactive_search(callback = None, search = db.search_items, add_buttons = []):
     """search for items or recipe"""
     
     def on_search(_):
@@ -199,34 +143,14 @@ class ResultFromProd:
             self.add_produced(product, quantity)
         else:
             self.needed[product] = quantity
-            request = select([recipes.c.id, recipes.c.name, recipes.c.time, recipe_products.c.amount]).where(
-                and_(
-                    recipes.c.id == recipe_products.c.recipe,
-                    recipe_products.c.item == items.c.id,
-                    items.c.name == product
-                ))
-            possibility = engine.execute(request).fetchall()
+            possibility = db.search_possibility_by_product(product)
             
             new_options = {}
             for r_id, r_name, r_time, r_amount in possibility:
-                request = select([items.c.name, recipe_ingredients.c.amount]).where(
-                    and_(
-                        recipe_ingredients.c.recipe == r_id,
-                        recipe_ingredients.c.item == items.c.id,
-                    )
-                )
-                ingredient = engine.execute(request).fetchall()
-                
-                request = select([items.c.name, recipe_products.c.amount]).where(
-                    and_(
-                        recipe_products.c.recipe == r_id,
-                        recipe_products.c.item == items.c.id,
-                    )
-                )
-                subproduct = engine.execute(request).fetchall()
-                new_options[r_name] = Option(r_name, r_time, r_amount, ingredient, subproduct)
+                ingredients = db.get_ingredients(r_id)
+                subproducts = db.get_subproducts(r_id)
+                new_options[r_name] = Option(r_name, r_time, r_amount, ingredients, subproducts)
             self.options[product] = new_options
-
 
     def show_options(self):
         return self.options
@@ -457,9 +381,6 @@ class DisplayProd:
 
 
 
-result = engine.execute(recipes.select())
-list_all_recipes = result.fetchall()
-len(list_all_recipes), list_all_recipes[:10], str(recipes.c)
 
 
 # In[16]:
@@ -490,21 +411,9 @@ builder = {
 
 all_recipes = {}
 
-for (r_id, _, name, _, alternate, time, _, _, _, _, _, producedIn) in list_all_recipes:
-    request = select([items.c.name, recipe_ingredients.c.amount]).where(
-                    and_(
-                        recipe_ingredients.c.recipe == r_id,
-                        recipe_ingredients.c.item == items.c.id,
-                    )
-                )
-    ingredients = engine.execute(request).fetchall()
-    
-    request = select([items.c.name, recipe_products.c.amount]).where(
-                and_(
-                    recipe_products.c.recipe == r_id,
-                    recipe_products.c.item == items.c.id
-                ))
-    products = engine.execute(request).fetchall()
+for (r_id, _, name, _, alternate, time, _, _, _, _, _, producedIn) in db.list_all_recipes:
+    ingredients = db.get_ingredients(r_id)
+    products = db.get_subproducts(r_id)
 
     if producedIn in builder:
         producedIn = builder[producedIn]
@@ -619,7 +528,7 @@ class ResultOfProd:
                 result.append((-qn, f"{-qn} {p}: -{qn}"))
                 
         if self.sort:
-        result.sort()
+            result.sort()
         
         return [ st for _, st in result ]
     
@@ -639,7 +548,7 @@ class ResultOfProd:
                 result.append((-qn, f"{-qn} {p}: -{qn}", p))
                 
         if self.sort:
-        result.sort()
+            result.sort()
         
         return (( (st, item, q) for q, st, item in result ))
     
@@ -666,7 +575,7 @@ class ResultOfProd:
                     yield sts, recipe, q - self.constructed[recipe]
                 else:
                     yield f"{myround(q)} {all_recipes[recipe].producedIn} using {recipe}", recipe, q
-        return result
+        return None
 
     def building(self):
         result = {}
@@ -720,12 +629,12 @@ def interactiveOfProduction(result, name):
             children = [] 
             for line, item, q in result.products():
                 try:
-                if q > 1:
-                    button_style=''
-                elif q > -1:
-                    button_style='success'
-                else:
-                    button_style='warning'
+                    if q > 1:
+                        button_style=''
+                    elif q > -1:
+                        button_style='success'
+                    else:
+                        button_style='warning'
                 except TypeError:
                     button_style='warning'
                     
@@ -740,13 +649,13 @@ def interactiveOfProduction(result, name):
             
             for line, recipe, q in result.recipes():
                 try:
-                if q > 0:
-                    button_style=''
-                else:
-                    button_style='success'
+                    if q > 0:
+                        button_style=''
+                    else:
+                        button_style='success'
                 except TypeError:
                     button_style=''
-                    
+
                 button = widgets.Button(description = line, layout=buttonLayout, button_style=button_style)
                 button.on_click(selectRecipeFun(recipe, q))
                 children.append(button)
@@ -793,19 +702,19 @@ def interactiveOfProduction(result, name):
         update()
 
     def on_recipes_by_product(item):
-        recipes = search_recipes_by_product(item)
+        recipes = db.search_recipes_by_product(item)
         selectRecipe.options = recipes
         
     def on_recipes_by_ingredient(item):
-        recipes = search_recipes_by_ingredients(item)
+        recipes = db.search_recipes_by_ingredients(item)
         selectRecipe.options = recipes
         
     def on_products_by_recipe(recipe):
-        items = search_products_by_recipes(recipe)
+        items = db.search_products_by_recipes(recipe)
         selectItem.options = items
 
     def on_ingredients_by_recipe(recipe):
-        items = search_ingredients_by_recipes(recipe)
+        items = db.search_ingredients_by_recipes(recipe)
         selectItem.options = items
         
     model = result
@@ -815,7 +724,7 @@ def interactiveOfProduction(result, name):
     recipeBox = widgets.VBox(description = 'recipe')
     
     log = widgets.Output()
-    searchItem = interactive_search(on_select_item, search_items, add_buttons=[
+    searchItem = interactive_search(on_select_item, db.search_items, add_buttons=[
         {
             'name': 'product',
             'callback': on_recipes_by_product
@@ -825,7 +734,7 @@ def interactiveOfProduction(result, name):
             'callback': on_recipes_by_ingredient
         }])
     selectItem = searchItem.choose_options
-    searchRecipe = interactive_search(on_select_recipe, search_recipes, add_buttons=[
+    searchRecipe = interactive_search(on_select_recipe, db.search_recipes, add_buttons=[
         {
             'name': 'product',
             'callback': on_products_by_recipe
@@ -882,24 +791,4 @@ def interactiveOfProduction(result, name):
 
 # %%
 def shopping_list(buildings_dict):
-    def add(dict1, k, value):
-        if k in dict1:
-            dict1[k] += value
-        else:
-            dict1[k] = value
-
-    shopping_list = {}
-    
-    for b, q in buildings_dict.items():
-        done, tot = q
-        request = select([buildings]).where(buildings.c.name == b)
-        recipe = engine.execute(request).fetchone()["recipe"]
-        request = select([items, recipe_ingredients])
-        request = request.where(recipe_ingredients.c.recipe == recipe)
-        request = request.where(recipe_ingredients.c.item == items.c.id)
-        result = engine.execute(request).fetchall()
-        for item in result:
-
-            add(shopping_list, item[items.c.name], (tot - done) * item[recipe_ingredients.c.amount])
-    
-    return shopping_list
+    return db.shopping_list(buildings_dict)
