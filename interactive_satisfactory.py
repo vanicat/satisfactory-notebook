@@ -535,12 +535,13 @@ class ResultOfProd:
     """ResultOfProd() make an object where you can add ressource, or recipe to plan production line
     
     quantity is a quantity by minute"""
-    def __init__(self, name = "None"):
+    def __init__(self, name = "None", sort = True):
         self.available =  {}
         self.needed =  {}
         self._recipes = {}
         self.constructed = {}
         self.name = name
+        self.sort = sort
         
     def construct(self, recipe, q):
         if recipe in self.constructed:
@@ -625,6 +626,7 @@ class ResultOfProd:
                 qn = myround(self.needed[p])
                 result.append((-qn, f"{-qn} {p}: -{qn}"))
                 
+        if self.sort:
         result.sort()
         
         return [ st for _, st in result ]
@@ -644,6 +646,7 @@ class ResultOfProd:
                 qn = myround(self.needed[p])
                 result.append((-qn, f"{-qn} {p}: -{qn}", p))
                 
+        if self.sort:
         result.sort()
         
         return (( (st, item, q) for q, st, item in result ))
@@ -724,11 +727,14 @@ def interactiveOfProduction(result, name):
             clear_output()
             children = [] 
             for line, item, q in result.products():
+                try:
                 if q > 1:
                     button_style=''
                 elif q > -1:
                     button_style='success'
                 else:
+                    button_style='warning'
+                except TypeError:
                     button_style='warning'
                     
                 button = widgets.Button(description = line, layout=buttonLayout, button_style=button_style)
@@ -741,10 +747,13 @@ def interactiveOfProduction(result, name):
             children = [] 
             
             for line, recipe, q in result.recipes():
+                try:
                 if q > 0:
                     button_style=''
                 else:
                     button_style='success'
+                except TypeError:
+                    button_style=''
                     
                 button = widgets.Button(description = line, layout=buttonLayout, button_style=button_style)
                 button.on_click(selectRecipeFun(recipe, q))
