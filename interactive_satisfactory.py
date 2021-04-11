@@ -14,14 +14,12 @@ import networkx as nx
 import random as rd
 import plotly.graph_objects as go
 from sqlalchemy.sql.expression import desc
-
-import sympy
-from numbers import Number
+from utils import myround
 
 def myround(v, x = 0):
-    if isinstance(v, Number):
+    try:
         return round(v, x)
-    else:
+    except TypeError:
         return v
 
 
