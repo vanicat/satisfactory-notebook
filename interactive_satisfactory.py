@@ -16,15 +16,6 @@ import plotly.graph_objects as go
 from sqlalchemy.sql.expression import desc
 from utils import myround
 
-STD_ROUND = 3
-
-def myround(v, x = STD_ROUND):
-    try:
-        return round(v, x)
-    except TypeError:
-        return v
-
-
 # In[3]: load satisfactory db
 
 
