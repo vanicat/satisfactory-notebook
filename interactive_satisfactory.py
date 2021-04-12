@@ -595,7 +595,11 @@ class ResultOfProd:
         return self
     
     def __exit__(self, *args):
-        display(interactiveOfProduction(self, self.name))
+        if len(self.name) < 4 or self.name[0:4] != '    ':
+            name = '    ' + self.name
+        else:
+            name = self.name
+        display(interactiveOfProduction(self, name))
     
     def __getitem__(self, name):
         qa = self.available[name] if name in self.available else 0
