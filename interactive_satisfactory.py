@@ -432,6 +432,10 @@ for (r_id, _, name, _, alternate, time, _, _, _, _, _, producedIn) in db.list_al
 
 ProducedItem = namedtuple('ProducedItem', ['quantity', 'recipe'])
 
+
+current_result = None
+
+
 class ResultOfProd:
     """ResultOfProd() make an object where you can add ressource, or recipe to plan production line
     
@@ -592,6 +596,8 @@ class ResultOfProd:
         return result
     
     def __enter__(self):
+        global current_result
+        current_result = self
         return self
     
     def __exit__(self, *args):
@@ -605,6 +611,18 @@ class ResultOfProd:
         qa = self.available[name] if name in self.available else 0
         qn = self.needed[name] if name in self.needed else 0
         return qa - qn
+
+# In[20]:
+for method in vars(ResultOfProd):
+    if len(method) > 2 and method[0:2] == '__':
+        continue
+    def f(m):
+        return lambda *args: getattr(current_result, m)(*args)
+    globals()[method] = f(method)
+
+def items(it):
+    return current_result[it]
+
 
 # In[20]:
 
