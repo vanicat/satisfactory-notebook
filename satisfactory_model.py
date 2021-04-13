@@ -43,13 +43,14 @@ class ResultOfProd:
     """ResultOfProd() make an object where you can add ressource, or recipe to plan production line
     
     quantity is a quantity by minute"""
-    def __init__(self, name = "None", sort = True):
+    def __init__(self, name = "None", sort = True, margin = 1):
         self.available =  {}
         self.needed =  {}
         self._recipes = {}
         self.constructed = {}
         self.name = name
         self.sort = sort
+        self.margin = margin
         
     def construct(self, recipe, q):
         if recipe in self.constructed:
@@ -208,7 +209,7 @@ class ResultOfProd:
             name = '    ' + self.name
         else:
             name = self.name
-        display(interactiveOfProduction(self, name, db))
+        display(interactiveOfProduction(self, name, db, self.margin))
     
     def __getitem__(self, name):
         qa = self.available[name] if name in self.available else 0
