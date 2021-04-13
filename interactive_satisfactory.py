@@ -51,7 +51,7 @@ def interactive_search(callback, search, add_buttons):
 
 
 # In[20]:
-def interactiveOfProduction(result, name, db):
+def interactiveOfProduction(result, name, db, margin=1):
     buttonLayout = widgets.Layout(width='80%', align='left', align_items='flex-start')
     
     def selectItemFun(item, q):
@@ -75,15 +75,15 @@ def interactiveOfProduction(result, name, db):
             children = [] 
             for line, item, q in result.products():
                 try:
-                    if q > 1:
+                    if q > margin:
                         button_style=''
-                    elif q > -1:
+                    elif q > -margin:
                         button_style='success'
                     else:
                         button_style='warning'
                 except TypeError:
                     button_style='warning'
-                    
+                
                 button = widgets.Button(description = line, layout=buttonLayout, button_style=button_style)
                 button.on_click(selectItemFun(item, q))
                 children.append(button)
@@ -176,7 +176,8 @@ def interactiveOfProduction(result, name, db):
         {
             'name': 'ingredient',
             'callback': on_recipes_by_ingredient
-        }])
+        }
+    ])
     selectItem = searchItem.choose_options
     searchRecipe = interactive_search(on_select_recipe, db.search_recipes, add_buttons=[
         {
@@ -187,7 +188,7 @@ def interactiveOfProduction(result, name, db):
             'name': 'ingred',
             'callback': on_ingredients_by_recipe
         }
-            ])
+    ])
     selectRecipe = searchRecipe.choose_options
     addBox = widgets.HBox()
 
