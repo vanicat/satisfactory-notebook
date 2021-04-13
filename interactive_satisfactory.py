@@ -168,7 +168,7 @@ def interactiveOfProduction(result, name, db, margin=1):
     recipeBox = widgets.VBox(description = 'recipe')
     
     log = widgets.Output()
-    searchItem = interactive_search(on_select_item, db.search_items, add_buttons=[
+    searchItem = interactive_search(on_select_item, db.search_items_name, add_buttons=[
         {
             'name': 'product',
             'callback': on_recipes_by_product
@@ -179,7 +179,7 @@ def interactiveOfProduction(result, name, db, margin=1):
         }
     ])
     selectItem = searchItem.choose_options
-    searchRecipe = interactive_search(on_select_recipe, db.search_recipes, add_buttons=[
+    searchRecipe = interactive_search(on_select_recipe, db.search_recipes_name, add_buttons=[
         {
             'name': 'product',
             'callback': on_products_by_recipe

@@ -15,12 +15,12 @@ class SatisfactoryDb:
         request = self.engine.execute(self.recipes.select())
         self.list_all_recipes = request.fetchall()
 
-    def search_recipes(self, pattern) -> list:
+    def search_recipes_name(self, pattern) -> list:
         request = self.recipes.select().where(self.recipes.c.name.like(f"%{pattern}%"))
         result = self.engine.execute(request).fetchall()
         return [ it[2] for it in result ]
 
-    def search_items(self, pattern):
+    def search_items_name(self, pattern):
         request = self.items.select().where(self.items.c.name.like(f"%{pattern}%"))
         result = self.engine.execute(request).fetchall()
         return [ it[2] for it in result ]
