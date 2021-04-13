@@ -1,4 +1,3 @@
-from collections import OrderedDict, namedtuple
 from interactive_satisfactory import interactiveOfProduction
 from utils import myround
 from satisfactory_db import SatisfactoryDb
@@ -7,36 +6,7 @@ import math
 
 db = SatisfactoryDb()
 
-Recipe = namedtuple('Recipe', ['name', 'alternate', 'time', 'ingredient', 'product', 'producedIn'])
-
-builder = {
-    'Desc_AssemblerMk1_C': 'Assembler',
-    'Desc_ConstructorMk1_C': 'Constructor',
-    'Desc_FoundryMk1_C': 'Foundry',
-    'Desc_ManufacturerMk1_C': 'Manufacturer',
-    'Desc_OilRefinery_C': 'Refinery',
-    'Desc_SmelterMk1_C': 'Smelter',
-    'Desc_Packager_C': 'Packager',
-    'Desc_Blender_C': 'Blender',
-    'Desc_HadronCollider_C': 'Hadron Collider',
-    None: None
-}
-
-
 # In[18]:
-all_recipes = {}
-
-for (r_id, _, name, _, alternate, time, _, _, _, _, _, producedIn) in db.list_all_recipes:
-    ingredients = db.get_ingredients(r_id)
-    products = db.get_subproducts(r_id)
-
-    if producedIn in builder:
-        producedIn = builder[producedIn]
-    
-    if name in all_recipes and all_recipes[name] != Recipe(name, alternate, time, ingredients, products, producedIn):
-        print(f"{name} déjà là: {all_recipes[name]} et {(name, alternate, time, ingredients, products, producedIn)} ")
-    all_recipes[name] = Recipe(name, alternate, time / 60, ingredients, products, producedIn)
-
 current_result = None
 
 class ResultOfProd:
@@ -81,24 +51,25 @@ class ResultOfProd:
         
     def add_recipe(self, name, n):
         """add n producter using recipe"""
-        assert name in all_recipes
         if name in self._recipes:
             self._recipes[name] += n
         else:
             self._recipes[name] = n
+        
+        recipe = db.recipes_by_name(name)
+
+        for item, quantity in recipe.ingredient:
+            self.consume_product(item, quantity * n / recipe.time)
             
-        for item, quantity in all_recipes[name].ingredient:
-            self.consume_product(item, quantity * n / all_recipes[name].time)
-            
-        for item, quantity in all_recipes[name].product:
-            self.add_product(item, quantity * n / all_recipes[name].time)
+        for item, quantity in recipe.product:
+            self.add_product(item, quantity * n / recipe.time)
             
     def consume_with_recipe(self, recipe_name, product, q = None):
         if getattr(q, '__getitem__', False):
             q = q[product]
         if q is None:
             q = self[product]
-        recipe = all_recipes[recipe_name]
+        recipe = db.recipes_by_name(recipe_name)
         n = 0
         for p, q2 in recipe.ingredient:
             if p == product:
@@ -111,7 +82,7 @@ class ResultOfProd:
             q = -q[product]
         if q is None:
             q = -self[product]
-        recipe = all_recipes[recipe_name]
+        recipe = db.recipes_by_name(recipe_name)
         n = 0
         for p, q2 in recipe.product:
             if p == product:
@@ -165,31 +136,31 @@ class ResultOfProd:
         for recipe, q in self._recipes.items():
             if q != 0:
                 if recipe in self.constructed:
-                    sts = f"{myround(self.constructed[recipe])} of {myround(q)} {all_recipes[recipe].producedIn} using {recipe}, reste {myround(q - self.constructed[recipe])}"
+                    sts = f"{myround(self.constructed[recipe])} of {myround(q)} {db.recipes_by_name(recipe).producedIn} using {recipe}, reste {myround(q - self.constructed[recipe])}"
                     if self.constructed[recipe] >= q:
                         sts = '# ' + sts
                     result.append(sts)
                 else:
-                    result.append(f"{myround(q)} {all_recipes[recipe].producedIn} using {recipe}")
+                    result.append(f"{myround(q)} {db.recipes_by_name(recipe).producedIn} using {recipe}")
         return result
     
     def recipes(self):
         for recipe, q in self._recipes.items():
             if q != 0:
                 if recipe in self.constructed:
-                    sts = f"{self.constructed[recipe]} of {myround(q)} {all_recipes[recipe].producedIn} using {recipe}, reste {myround(q - self.constructed[recipe])}"
+                    sts = f"{self.constructed[recipe]} of {myround(q)} {db.recipes_by_name(recipe).producedIn} using {recipe}, reste {myround(q - self.constructed[recipe])}"
                     if self.constructed[recipe] >= q:
                         sts = '# ' + sts
                     yield sts, recipe, q - self.constructed[recipe]
                 else:
-                    yield f"{myround(q)} {all_recipes[recipe].producedIn} using {recipe}", recipe, q
+                    yield f"{myround(q)} {db.recipes_by_name(recipe).producedIn} using {recipe}", recipe, q
         return None
 
     def building(self):
         result = {}
         for recipe, q in self._recipes.items():
             if q != 0:
-                p = all_recipes[recipe].producedIn
+                p = db.recipes_by_name(recipe).producedIn
                 c = self.constructed.get(recipe, 0)
                 q = math.ceil(q)
                 if p in result:

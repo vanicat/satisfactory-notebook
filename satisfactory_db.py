@@ -1,4 +1,21 @@
+from collections import namedtuple
 from sqlalchemy import create_engine, Table, select, MetaData, and_
+
+Recipe = namedtuple('Recipe', ['name', 'alternate', 'time', 'ingredient', 'product', 'producedIn'])
+
+builder = {
+    'Desc_AssemblerMk1_C': 'Assembler',
+    'Desc_ConstructorMk1_C': 'Constructor',
+    'Desc_FoundryMk1_C': 'Foundry',
+    'Desc_ManufacturerMk1_C': 'Manufacturer',
+    'Desc_OilRefinery_C': 'Refinery',
+    'Desc_SmelterMk1_C': 'Smelter',
+    'Desc_Packager_C': 'Packager',
+    'Desc_Blender_C': 'Blender',
+    'Desc_HadronCollider_C': 'Hadron Collider',
+    None: None
+}
+
 
 class SatisfactoryDb:
     def __init__(self) -> None:
@@ -11,14 +28,30 @@ class SatisfactoryDb:
         self.recipe_products = Table('recipe_products', self.meta, autoload=True, autoload_with=self.engine)
         self.buildings = Table('buildings', self.meta, autoload=True, autoload_with=self.engine)
 
-        # TODO: realy fetch on init ? maybe more gc friendly has to be done.
-        request = self.engine.execute(self.recipes.select())
-        self.list_all_recipes = request.fetchall()
-
     def search_recipes_name(self, pattern) -> list:
         request = self.recipes.select().where(self.recipes.c.name.like(f"%{pattern}%"))
         result = self.engine.execute(request).fetchall()
         return [ it[2] for it in result ]
+
+    def recipes_by_name(self, name) -> Recipe:
+        request = select([
+            self.recipes.c.id,
+            self.recipes.c.name,
+            self.recipes.c.alternate,
+            self.recipes.c.time,
+            self.recipes.c.producedIn
+        ]).where(self.recipes.c.name == name)
+        recipe = self.engine.execute(request).fetchone()
+        if recipe is None:
+            raise ValueError("Recipe not known")
+        (r_id, name, alternate, time, producedIn) = recipe
+        ingredients = self.get_ingredients(r_id)
+        products = self.get_subproducts(r_id)
+
+        if producedIn in builder:
+            producedIn = builder[producedIn]
+
+        return Recipe(name, alternate, time / 60, ingredients, products, producedIn)
 
     def search_items_name(self, pattern):
         request = self.items.select().where(self.items.c.name.like(f"%{pattern}%"))

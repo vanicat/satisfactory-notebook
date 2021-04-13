@@ -1,6 +1,11 @@
-from satifactory import *
+# in[2]:
+# in[1]:
 
-def test_read_db():
+from satifactory import *
+from satisfactory_model import db
+from satisfactory_db import Recipe
+
+def test_interactive_nuclear():
     with ResultOfProd("nuclear", margin = 0.0001):
         add_recipe('Uranium Fuel Rod in Nuclear Power Plant', 4)
         produce_with_recipe('Alternate: Uranium Fuel Unit', 'Uranium Fuel Rod')
@@ -19,3 +24,14 @@ def test_read_db():
         produce_with_recipe('Alternate: Fused Quickwire', 'Quickwire')
         produce_with_recipe('Steel Pipe', 'Steel Pipe')
 
+def test_db():
+    wire = db.recipes_by_name("Wire")
+    assert wire, "Wire recipe not found"
+    assert isinstance(wire, Recipe), "Bad type for recipe"
+    assert wire.name == "Wire", "Incorrect recipe found"
+
+# In[2]:
+if __name__ == "__main__":
+    import pytest
+    pytest.main()
+# %%
