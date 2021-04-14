@@ -138,6 +138,8 @@ class SatisfactoryDb:
         
         return shopping_list
 
+db = SatisfactoryDb()
+
 if __name__ == "__main__":
     db = SatisfactoryDb()
     names = db.search_items_name("wire")
