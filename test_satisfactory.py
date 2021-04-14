@@ -1,6 +1,6 @@
 from satisfactory import *
-from satisfactory_model import db, current_result
-from satisfactory_db import Recipe
+from satisfactory_model import current_result
+from satisfactory_db import Recipe, db
 
 def test_interactive_nuclear():
     with ResultOfProd("nuclear", margin = 0.0001):
