@@ -13,6 +13,14 @@ import satisfactory_db as sdb
 
 
 # In[5]:
+def print_recipe(recipe: sdb.Recipe, n: float) -> None:
+    print('    ingredient:')
+    for ing, q in recipe.ingredient:
+        print(f"        {ing}: {n*q/recipe.time}/min")
+    print('    product')
+    for ing, q in recipe.product:
+        print(f"        {ing}: {n*q/recipe.time}/min")
+
 
 def interactive_search(search: Callable, add_buttons: list) -> widgets.Widget:
     """search for items or recipe"""
@@ -159,14 +167,8 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
     def on_recipe_desc(recipe):
         with desc:
             recipe = db.recipes_by_name(recipe)
-            time = recipe.time
             print(f"{recipe.name} in {recipe.producedIn}:")
-            print('    ingredient:')
-            for ing, q in recipe.ingredient:
-                print(f"        {ing}: {q/time}/min")
-            print('    product')
-            for ing, q in recipe.product:
-                print(f"        {ing}: {q/time}/min")
+            print_recipe(recipe, 1)
     
     def on_recipe_options_change(_):
         with desc:
