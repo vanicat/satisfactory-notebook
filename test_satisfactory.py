@@ -1,8 +1,8 @@
 # in[2]:
 # in[1]:
 
-from satifactory import *
 from satisfactory_model import db
+from satisfactory import *
 from satisfactory_db import Recipe
 
 def test_interactive_nuclear():
