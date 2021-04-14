@@ -7,8 +7,8 @@ from typing import Callable
 from ipywidgets.widgets.widget_box import VBox
 from IPython.display import clear_output
 import ipywidgets as widgets
-from satisfactory_model import ResultOfProd
-from satisfactory_db import SatisfactoryDb
+import satisfactory_model as sm
+import satisfactory_db as sdb
 #import matplotlib.pyplot as plt
 
 
@@ -50,7 +50,7 @@ def interactive_search(search: Callable, add_buttons: list) -> widgets.Widget:
 
 
 # In[20]:
-def interactiveOfProduction(result: ResultOfProd, name: str, db: SatisfactoryDb, margin=1) -> widgets.Widget:
+def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.SatisfactoryDb', margin=1) -> widgets.Widget:
     buttonLayout = widgets.Layout(width='80%', align='left', align_items='flex-start')
     
     def selectItemFun(item, q):
