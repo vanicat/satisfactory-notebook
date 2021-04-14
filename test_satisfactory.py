@@ -1,6 +1,7 @@
 from satisfactory import *
 from satisfactory_model import current_result
 from satisfactory_db import Recipe, db
+import sympy
 import math
 
 def test_interactive_nuclear():
@@ -13,6 +14,14 @@ def test_interactive_nuclear():
         assert prod['Uranium Fuel Rod'] == 0, "Fuel rod not produced by produce_with_recipe"
         consume_with_recipe('Alternate: Fertile Uranium', 'Uranium Waste')
         assert prod['Uranium Waste'] == 0, "Uranium Waste not consumed"
+
+def test_interactive_turbofuel():
+    prod = ResultOfProd("prod")
+    x = sympy.Symbol('x')
+    prod.add_product('Turbofuel', x)
+    prod.consume_with_recipe('Turbofuel in Fuel Generator', 'Turbofuel')
+    assert prod['Turbofuel'] == 0
+    assert sympy.nsimplify(prod['electricity']) == 2 * 150 * x / 9
 
 def test_db():
     wire = db.recipes_by_name("Wire")
