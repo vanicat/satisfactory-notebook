@@ -1,8 +1,5 @@
-# in[2]:
-# in[1]:
-
-from satisfactory_model import db
 from satisfactory import *
+from satisfactory_model import db, current_result
 from satisfactory_db import Recipe
 
 def test_interactive_nuclear():
@@ -39,8 +36,6 @@ def test_get_building_by_class():
     assert building == "Frame Foundation 8m x 4m"
 
 
-# In[2]:
 if __name__ == "__main__":
     import pytest
     pytest.main()
-# %%
