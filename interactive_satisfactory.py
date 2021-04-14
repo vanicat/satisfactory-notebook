@@ -68,13 +68,22 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
             searchItem.choose_options.value = item
         return callback
     
-    def selectRecipeFun(item, q):
+    def selectRecipeFun(recipe, n, output):
         def callback(_):
-            quantityItem.value = abs(q)
-            searchRecipe.choose_options.options = [ item ]
-            searchRecipe.choose_options.value = item
+            quantityItem.value = abs(n)
+            searchRecipe.choose_options.options = [ recipe ]
+            searchRecipe.choose_options.value = recipe
+            if output.collapse:
+                output.collapse = False
+                with output:
+                    print_recipe(sdb.db.recipes_by_name(recipe), n)
+            else:
+                output.collapse = True
+                with output:
+                    clear_output()
+
+        
         return callback
-    
     
     def update():
         with output:
@@ -110,8 +119,11 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
                     button_style=''
 
                 button = widgets.Button(description = line, layout=buttonLayout, button_style=button_style)
-                button.on_click(selectRecipeFun(recipe, q))
-                children.append(button)
+                button_output = widgets.Output()               
+                button_box = widgets.VBox([button, button_output])
+                button_output.collapse = True
+                button.on_click(selectRecipeFun(recipe, q, button_output))
+                children.append(button_box)
                 
             recipeBox.children = children
             
