@@ -160,8 +160,25 @@ def interactiveOfProduction(result, name, db, margin=1):
     def on_ingredients_by_recipe(recipe):
         items = db.search_ingredients_by_recipes(recipe)
         selectItem.options = items
+
+    def on_recipe_desc(recipe):
+        with desc:
+            recipe = db.recipes_by_name(recipe)
+            time = recipe.time
+            print(f"{recipe.name} in {recipe.producedIn}:")
+            print('    ingredient:')
+            for ing, q in recipe.ingredient:
+                print(f"        {ing}: {q/time}/min")
+            print('    product')
+            for ing, q in recipe.product:
+                print(f"        {ing}: {q/time}/min")
     
+    def on_recipe_options_change(_):
+        with desc:
+            clear_output()
+
     output = widgets.Output()
+    desc = widgets.Output()
     itemBox = widgets.VBox(description = 'items')
     recipeBox = widgets.VBox(description = 'recipe')
     
@@ -185,10 +202,16 @@ def interactiveOfProduction(result, name, db, margin=1):
         {
             'name': 'ingred',
             'callback': on_ingredients_by_recipe
+        },
+        {
+            'name': 'description',
+            'callback': on_recipe_desc
         }
     ])
     selectRecipe = searchRecipe.choose_options
     addBox = widgets.HBox()
+
+    selectRecipe.observe(on_recipe_options_change, "options")
 
     quantityItem = widgets.FloatText(description = "quantity")
     validateAdd = widgets.Button(description='Add')
@@ -222,6 +245,7 @@ def interactiveOfProduction(result, name, db, margin=1):
             ]),
         ]),
         widgets.HBox([quantityItem, validateAdd, consumeButton, produceButton, validateRecipe, buildFactory]),
+        desc,
         widgets.Label("Item produced"),
         itemBox,
         widgets.Label("Recipe used"),
