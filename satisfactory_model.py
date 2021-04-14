@@ -1,8 +1,47 @@
+from typing import Dict
 from interactive_satisfactory import interactiveOfProduction
 from utils import myround
 import satisfactory_db as sdb
 from IPython.display import display
 import math
+
+class Production():
+    """There should never be two different production for the same recipe in one model"""
+
+    def __init__(self, recipe:sdb.Recipe, planned:float, constructed = 0):
+        self.recipe = recipe
+        self.plan = planned
+        self.done = constructed
+
+    def __hash__(self) -> int:
+        return hash(self.recipe)
+
+    def __eq__(self, o: object) -> bool:
+        return self.recipe == o.recipe
+
+    def __str__(self) -> str:
+        if self.done > 0:
+            return f"{self.done} of {myround(self.plan)} {self.recipe.producedIn} using {self.recipe.name}, reste {myround(self.plan - self.done)}"
+        else:
+            return  f"{myround(self.plan)} {self.recipe.producedIn} using {self.recipe.name}"
+
+    def add(self, n):
+        self.plan += n
+    
+    def build(self, n):
+        self.done += n
+
+    def _yield_quantity(self, things, n):
+        if n is None:
+            n = self.plan
+        for item, quantity in things:
+            yield (item, quantity * n / self.recipe.time)
+
+    def ingredient(self, n = None):
+        return self._yield_quantity(self.recipe.ingredient, n)
+
+    def product(self, n):
+        return self._yield_quantity(self.recipe.product, n)
 
 
 # In[18]:
@@ -15,16 +54,13 @@ class ResultOfProd:
     def __init__(self, name = None, margin = 1):
         self.available =  {}
         self.needed =  {}
-        self._recipes = {}
-        self.constructed = {}
+        self._recipes : Dict[str, Production] = {}
         self.name = name
         self.margin = margin
         
     def construct(self, recipe, q):
-        if recipe in self.constructed:
-            self.constructed[recipe] += q
-        else:
-            self.constructed[recipe] = q
+        assert recipe in self._recipes
+        self._recipes[recipe].build(q)
         
     def add_product(self, p, q):
         if p in self.available:
@@ -50,17 +86,19 @@ class ResultOfProd:
     def add_recipe(self, name, n):
         """add n producter using recipe"""
         if name in self._recipes:
-            self._recipes[name] += n
+            prod = self.self._recipes[name]
+            prod.add(n)
         else:
-            self._recipes[name] = n
-        
         recipe = sdb.db.recipes_by_name(name)
+            prod = Production(recipe, n)
+            self._recipes[name] = prod
 
-        for item, quantity in recipe.ingredient:
-            self.consume_product(item, quantity * n / recipe.time)
             
-        for item, quantity in recipe.product:
-            self.add_product(item, quantity * n / recipe.time)
+        for item, quantity in prod.ingredient(n):
+            self.consume_product(item, quantity)
+            
+        for item, quantity in prod.product(n):
+            self.add_product(item, quantity)
             
     def consume_with_recipe(self, recipe_name, product, q = None):
         if getattr(q, '__getitem__', False):
@@ -133,29 +171,11 @@ class ResultOfProd:
         
         return (( (st, item, q) for q, st, item in result ))
     
-    def strs_recipes(self):
-        result = []
-        for recipe, q in self._recipes.items():
-            if q != 0:
-                if recipe in self.constructed:
-                    sts = f"{myround(self.constructed[recipe])} of {myround(q)} {sdb.db.recipes_by_name(recipe).producedIn} using {recipe}, reste {myround(q - self.constructed[recipe])}"
-                    if self.constructed[recipe] >= q:
-                        sts = '# ' + sts
-                    result.append(sts)
-                else:
-                    result.append(f"{myround(q)} {sdb.db.recipes_by_name(recipe).producedIn} using {recipe}")
-        return result
-    
     def recipes(self):
-        for recipe, q in self._recipes.items():
+        for name, prod in self._recipes.items():
+            q = prod.plan
             if q != 0:
-                if recipe in self.constructed:
-                    sts = f"{self.constructed[recipe]} of {myround(q)} {sdb.db.recipes_by_name(recipe).producedIn} using {recipe}, reste {myround(q - self.constructed[recipe])}"
-                    if self.constructed[recipe] >= q:
-                        sts = '# ' + sts
-                    yield sts, recipe, q - self.constructed[recipe]
-                else:
-                    yield f"{myround(q)} {sdb.db.recipes_by_name(recipe).producedIn} using {recipe}", recipe, q
+                yield prod
         return None
 
     def building(self):

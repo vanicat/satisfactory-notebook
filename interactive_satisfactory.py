@@ -92,12 +92,12 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
     def selectRecipeFun(recipe, n, output):
         def callback(_):
             set_quantity(n)
-            searchRecipe.choose_options.options = [ recipe ]
-            searchRecipe.choose_options.value = recipe
+            searchRecipe.choose_options.options = [ recipe.name ]
+            searchRecipe.choose_options.value = recipe.name
             if output.collapse:
                 output.collapse = False
                 with output:
-                    print_recipe(sdb.db.recipes_by_name(recipe), n)
+                    print_recipe(recipe, n)
             else:
                 output.collapse = True
                 with output:
@@ -130,7 +130,8 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
             print('recipes:')
             children = [] 
             
-            for line, recipe, q in result.recipes():
+            for prod in result.recipes():
+                q = prod.plan - prod.done
                 try:
                     if q > 0:
                         button_style=''
@@ -139,11 +140,11 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
                 except TypeError:
                     button_style=''
 
-                button = widgets.Button(description = line, layout=buttonLayout, button_style=button_style)
+                button = widgets.Button(description = str(prod), layout=buttonLayout, button_style=button_style)
                 button_output = widgets.Output()               
                 button_box = widgets.VBox([button, button_output])
                 button_output.collapse = True
-                button.on_click(selectRecipeFun(recipe, q, button_output))
+                button.on_click(selectRecipeFun(prod.recipe, q, button_output))
                 children.append(button_box)
                 
             recipeBox.children = children

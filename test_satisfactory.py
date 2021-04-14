@@ -1,5 +1,5 @@
 from satisfactory import *
-from satisfactory_model import current_result
+from satisfactory_model import Production
 from satisfactory_db import Recipe, db
 import sympy
 import math
@@ -37,6 +37,12 @@ def test_get_building_by_class():
     building = db.building_name_by_class('Desc_Foundation_Frame_01_C')
     assert building == "Frame Foundation 8m x 4m"
 
+
+def test_production():
+    wire = db.recipes_by_name("Wire")
+    wireProd = Production(wire, 3)
+    ingredient = list(wireProd.ingredient(3))
+    assert ('Copper Ingot', 45) in ingredient
 
 if __name__ == "__main__":
     import pytest
