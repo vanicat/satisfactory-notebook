@@ -29,15 +29,16 @@ class SatisfactoryDb:
             self.recipes.c.producedIn
         ]).where(self.recipes.c.name == name)
         recipe = self.engine.execute(request).fetchone()
+
         if recipe is None:
             raise ValueError("Recipe not known")
         (r_id, name, alternate, time, producedIn) = recipe
         ingredients = self.get_ingredients(r_id)
         products = self.get_subproducts(r_id)
 
-        name = self.building_name_by_class(producedIn)
-        if name:
-            producedIn = name
+        producer = self.building_name_by_class(producedIn)
+        if producer:
+            producedIn = producer
 
         return Recipe(name, alternate, time / 60, ingredients, products, producedIn)
 
@@ -86,6 +87,7 @@ class SatisfactoryDb:
         return [ it[2] for it in result ]
 
     def search_possibility_by_product(self, product):
+        """This is a method from old interface"""
         request = select([self.recipes.c.id, self.recipes.c.name, self.recipes.c.time, self.recipe_products.c.amount]).where(
                 and_(
                     self.recipes.c.id == self.recipe_products.c.recipe,
@@ -135,3 +137,12 @@ class SatisfactoryDb:
                 add(shopping_list, item[self.items.c.name], (tot - done) * item[self.recipe_ingredients.c.amount])
         
         return shopping_list
+
+if __name__ == "__main__":
+    db = SatisfactoryDb()
+    names = db.search_items_name("wire")
+    print(f"available wire: {names}")
+    recipes = db.search_recipes_by_product(names[0])
+    print(f"recipe to produce {names[0]}: {recipes}")
+    full_recipe = db.recipes_by_name(recipes[0])
+    print(f"a recipe: {full_recipe}")
