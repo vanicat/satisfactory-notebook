@@ -10,16 +10,19 @@ import ipywidgets as widgets
 import satisfactory_model as sm
 import satisfactory_db as sdb
 #import matplotlib.pyplot as plt
+import sympy
+from sympy import nsimplify, simplify
+from sympy.parsing.sympy_parser import parse_expr
 
 
 # In[5]:
 def print_recipe(recipe: sdb.Recipe, n: float) -> None:
     print('    ingredient:')
     for ing, q in recipe.ingredient:
-        print(f"        {ing}: {n*q/recipe.time}/min")
+        print(f"        {ing}: {simplify(n*q/recipe.time)}/min")
     print('    product')
     for ing, q in recipe.product:
-        print(f"        {ing}: {n*q/recipe.time}/min")
+        print(f"        {ing}: {simplify(n*q/recipe.time)}/min")
 
 
 def interactive_search(search: Callable, add_buttons: list) -> widgets.Widget:
@@ -60,17 +63,27 @@ def interactive_search(search: Callable, add_buttons: list) -> widgets.Widget:
 # In[20]:
 def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.SatisfactoryDb', margin=1) -> widgets.Widget:
     buttonLayout = widgets.Layout(width='80%', align='left', align_items='flex-start')
+
+    def set_quantity(q):
+        if isinstance(q, sympy.Number) or isinstance(q, float) or isinstance(q, int):
+            quantityItem.value = str(abs(q))
+        else:
+            quantityItem.value = str(q)
+
+    def get_quantity():
+        return parse_expr(quantityItem.value)
+
     
     def selectItemFun(item, q):
         def callback(_):
-            quantityItem.value = abs(q)
+            set_quantity(q)
             searchItem.choose_options.options = [ item ]
             searchItem.choose_options.value = item
         return callback
     
     def selectRecipeFun(recipe, n, output):
         def callback(_):
-            quantityItem.value = abs(n)
+            set_quantity(n)
             searchRecipe.choose_options.options = [ recipe ]
             searchRecipe.choose_options.value = recipe
             if output.collapse:
@@ -128,36 +141,36 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
             recipeBox.children = children
             
     def on_add_item(v):
-        result.add_product(selectItem.value, quantityItem.value)
+        result.add_product(selectItem.value, get_quantity())
         with log:
-            print(f"{name}.add_product({repr(selectItem.value)}, {quantityItem.value})")
+            print(f"{name}.add_product({repr(selectItem.value)}, {get_quantity()})")
         update()
             
     def on_add_factory(v):
-        result.add_recipe(selectRecipe.value, quantityItem.value)
+        result.add_recipe(selectRecipe.value, get_quantity())
         with log:
-            print(f"{name}.add_recipe({repr(selectRecipe.value)}, {quantityItem.value})")
+            print(f"{name}.add_recipe({repr(selectRecipe.value)}, {get_quantity()})")
         update()
         
     def on_consume(_):
         if selectItem.value is not None and selectRecipe.value is not None:
-            result.consume_with_recipe(selectRecipe.value, selectItem.value, quantityItem.value)
+            result.consume_with_recipe(selectRecipe.value, selectItem.value, get_quantity())
             with log:
-                print(f"{name}.consume_with_recipe({repr(selectRecipe.value)}, {repr(selectItem.value)}, {quantityItem.value})")
+                print(f"{name}.consume_with_recipe({repr(selectRecipe.value)}, {repr(selectItem.value)}, {get_quantity()})")
         update()
             
     def on_produce(_):
         if selectItem.value is not None and selectRecipe.value is not None:
-            result.produce_with_recipe(selectRecipe.value, selectItem.value, quantityItem.value)
+            result.produce_with_recipe(selectRecipe.value, selectItem.value, get_quantity())
             with log:
-                print(f"{name}.produce_with_recipe({repr(selectRecipe.value)}, {repr(selectItem.value)}, {quantityItem.value})")
+                print(f"{name}.produce_with_recipe({repr(selectRecipe.value)}, {repr(selectItem.value)}, {get_quantity()})")
         update()
         
     def on_construct(_):
         if selectRecipe.value is not None:
-            result.construct(selectRecipe.value, quantityItem.value)
+            result.construct(selectRecipe.value, get_quantity())
             with log:
-                print(f"{name}.construct({repr(selectRecipe.value)}, {quantityItem.value})")
+                print(f"{name}.construct({repr(selectRecipe.value)}, {get_quantity()})")
         update()
 
     def on_recipes_by_product(item):
@@ -221,7 +234,7 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
 
     selectRecipe.observe(on_recipe_options_change, "options")
 
-    quantityItem = widgets.FloatText(description = "quantity")
+    quantityItem = widgets.Text(description = "quantity")
     validateAdd = widgets.Button(description='Add')
     validateAdd.on_click(on_add_item)
     
