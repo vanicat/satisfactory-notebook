@@ -24,11 +24,20 @@ def test_interactive_nuclear():
         produce_with_recipe('Alternate: Fused Quickwire', 'Quickwire')
         produce_with_recipe('Steel Pipe', 'Steel Pipe')
 
+
 def test_db():
     wire = db.recipes_by_name("Wire")
     assert wire, "Wire recipe not found"
     assert isinstance(wire, Recipe), "Bad type for recipe"
     assert wire.name == "Wire", "Incorrect recipe found"
+
+
+def test_get_building_by_class():
+    building = db.building_name_by_class('NoneClass')
+    assert building is None
+    building = db.building_name_by_class('Desc_Foundation_Frame_01_C')
+    assert building == "Frame Foundation 8m x 4m"
+
 
 # In[2]:
 if __name__ == "__main__":

@@ -3,19 +3,6 @@ from sqlalchemy import create_engine, Table, select, MetaData, and_
 
 Recipe = namedtuple('Recipe', ['name', 'alternate', 'time', 'ingredient', 'product', 'producedIn'])
 
-builder = {
-    'Desc_AssemblerMk1_C': 'Assembler',
-    'Desc_ConstructorMk1_C': 'Constructor',
-    'Desc_FoundryMk1_C': 'Foundry',
-    'Desc_ManufacturerMk1_C': 'Manufacturer',
-    'Desc_OilRefinery_C': 'Refinery',
-    'Desc_SmelterMk1_C': 'Smelter',
-    'Desc_Packager_C': 'Packager',
-    'Desc_Blender_C': 'Blender',
-    'Desc_HadronCollider_C': 'Hadron Collider',
-    None: None
-}
-
 
 class SatisfactoryDb:
     def __init__(self) -> None:
@@ -48,10 +35,18 @@ class SatisfactoryDb:
         ingredients = self.get_ingredients(r_id)
         products = self.get_subproducts(r_id)
 
-        if producedIn in builder:
-            producedIn = builder[producedIn]
+        name = self.building_name_by_class(producedIn)
+        if name:
+            producedIn = name
 
         return Recipe(name, alternate, time / 60, ingredients, products, producedIn)
+
+    def building_name_by_class(self, _class):
+        request = select([self.buildings.c.name]).where(self.buildings.c.className == _class)
+        result = self.engine.execute(request).fetchone()
+        if result is not None:
+            return result[0]
+        return None
 
     def search_items_name(self, pattern):
         request = self.items.select().where(self.items.c.name.like(f"%{pattern}%"))
