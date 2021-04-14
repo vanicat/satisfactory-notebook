@@ -3,21 +3,24 @@
 
 # In[1]:
 
+from typing import Callable
 from ipywidgets.widgets.widget_box import VBox
 from IPython.display import clear_output
 import ipywidgets as widgets
+from satisfactory_model import ResultOfProd
+from satisfactory_db import SatisfactoryDb
 #import matplotlib.pyplot as plt
 
 
 # In[5]:
 
-def interactive_search(search, add_buttons):
+def interactive_search(search: Callable, add_buttons: list) -> widgets.Widget:
     """search for items or recipe"""
     
     def on_search(_):
         result = search(search_widget.value)
         choose_options.options = result
-        
+    
     search_widget = widgets.Text()
     search_button = widgets.Button(description = "search")
     
@@ -47,7 +50,7 @@ def interactive_search(search, add_buttons):
 
 
 # In[20]:
-def interactiveOfProduction(result, name, db, margin=1):
+def interactiveOfProduction(result: ResultOfProd, name: str, db: SatisfactoryDb, margin=1) -> widgets.Widget:
     buttonLayout = widgets.Layout(width='80%', align='left', align_items='flex-start')
     
     def selectItemFun(item, q):
