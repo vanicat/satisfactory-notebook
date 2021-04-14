@@ -37,9 +37,11 @@ def interactive_search(callback, search, add_buttons):
         b.on_click(make_callback(desc["callback"]))
 
     choose_options = widgets.Select()
+    #choose_button = widgets.Button(description = "Choose")
     choose_box = widgets.HBox((choose_options, widgets.VBox(buttons)))
     
     # choose_options.on_submit(on_choose)
+    #choose_button.on_click(on_choose)
     
     result = widgets.VBox((search_box, choose_box))
     result.choose_options = choose_options
@@ -209,7 +211,6 @@ def interactiveOfProduction(result, name, db, margin=1):
         }
     ])
     selectRecipe = searchRecipe.choose_options
-    addBox = widgets.HBox()
 
     selectRecipe.observe(on_recipe_options_change, "options")
 
@@ -228,9 +229,7 @@ def interactiveOfProduction(result, name, db, margin=1):
     
     buildFactory = widgets.Button(description='Build Factory')
     buildFactory.on_click(on_construct)
-    
-    consumeRecipe = widgets.FloatText()
-    
+        
     update()
     
     return widgets.VBox([
