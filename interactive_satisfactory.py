@@ -77,6 +77,8 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
             quantityItem.value = str(q)
 
     def get_quantity():
+        if (not quantityItem.value) or quantityItem.value.isspace():
+            return None
         return parse_expr(quantityItem.value)
 
     
@@ -147,13 +149,13 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
             recipeBox.children = children
             
     def on_add_item(v):
-        result.add_product(selectItem.value, get_quantity())
-        log_it(f"add_product({repr(selectItem.value)}, {get_quantity()})")
+        result.add_product(selectItem.value, get_quantity() or 0)
+        log_it(f"add_product({repr(selectItem.value)}, {get_quantity() or 0})")
         update()
             
     def on_add_factory(v):
-        result.add_recipe(selectRecipe.value, get_quantity())
-        log_it(f"add_recipe({repr(selectRecipe.value)}, {get_quantity()})")
+        result.add_recipe(selectRecipe.value, get_quantity() or 0)
+        log_it(f"add_recipe({repr(selectRecipe.value)}, {get_quantity() or 0})")
         update()
         
     def on_consume(_):
@@ -170,8 +172,8 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
         
     def on_construct(_):
         if selectRecipe.value is not None:
-            result.construct(selectRecipe.value, get_quantity())
-            log_it(f"construct({repr(selectRecipe.value)}, {get_quantity()})")
+            result.construct(selectRecipe.value, get_quantity() or 0)
+            log_it(f"construct({repr(selectRecipe.value)}, {get_quantity() or 0})")
         update()
 
     def on_recipes_by_product(item):
