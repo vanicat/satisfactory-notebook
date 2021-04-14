@@ -12,13 +12,12 @@ class ResultOfProd:
     """ResultOfProd() make an object where you can add ressource, or recipe to plan production line
     
     quantity is a quantity by minute"""
-    def __init__(self, name = "None", sort = True, margin = 1):
+    def __init__(self, name = "None", margin = 1):
         self.available =  {}
         self.needed =  {}
         self._recipes = {}
         self.constructed = {}
         self.name = name
-        self.sort = sort
         self.margin = margin
         
     def construct(self, recipe, q):
@@ -105,8 +104,10 @@ class ResultOfProd:
                 qn = myround(self.needed[p])
                 result.append((-qn, f"{-qn} {p}: -{qn}"))
                 
-        if self.sort:
+        try:
             result.sort()
+        except TypeError:
+            pass
         
         return [ st for _, st in result ]
     
@@ -125,8 +126,10 @@ class ResultOfProd:
                 qn = myround(self.needed[p])
                 result.append((-qn, f"{-qn} {p}: -{qn}", p))
                 
-        if self.sort:
+        try:
             result.sort()
+        except TypeError:
+            pass
         
         return (( (st, item, q) for q, st, item in result ))
     
