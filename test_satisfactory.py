@@ -1,32 +1,25 @@
 from satisfactory import *
 from satisfactory_model import current_result
 from satisfactory_db import Recipe, db
+import math
 
 def test_interactive_nuclear():
-    with ResultOfProd("nuclear", margin = 0.0001):
+    with ResultOfProd("nuclear", margin = 0.0001) as prod:
         add_recipe('Uranium Fuel Rod in Nuclear Power Plant', 4)
+        assert math.isclose(prod['Uranium Fuel Rod'], -0.8), "Incorrect prod for fuel rod: {prod['Uranium Fuel Rod']}"
+        assert prod['Uranium Waste'] > 0, "No uranium waste produced"
+        assert prod['electricity'] > 0, "No eletricity produced"
         produce_with_recipe('Alternate: Uranium Fuel Unit', 'Uranium Fuel Rod')
-        produce_with_recipe('Encased Uranium Cell', 'Encased Uranium Cell')
-        produce_with_recipe('Sulfuric Acid', 'Sulfuric Acid')
-        produce_with_recipe('Crystal Oscillator', 'Crystal Oscillator')
-        produce_with_recipe('Beacon', 'Beacon')
-        produce_with_recipe('Electromagnetic Control Rod', 'Electromagnetic Control Rod')
-        produce_with_recipe('Concrete', 'Concrete')
-        produce_with_recipe('Alternate: Stitched Iron Plate', 'Reinforced Iron Plate')
-        produce_with_recipe('Iron Plate', 'Iron Plate')
-        produce_with_recipe('Cable', 'Cable')
-        produce_with_recipe('Wire', 'Wire')
-        produce_with_recipe('Alternate: Quickwire Stator', 'Stator')
-        produce_with_recipe('AI Limiter', 'AI Limiter')
-        produce_with_recipe('Alternate: Fused Quickwire', 'Quickwire')
-        produce_with_recipe('Steel Pipe', 'Steel Pipe')
-
+        assert prod['Uranium Fuel Rod'] == 0, "Fuel rod not produced by produce_with_recipe"
+        consume_with_recipe('Alternate: Fertile Uranium', 'Uranium Waste')
+        assert prod['Uranium Waste'] == 0, "Uranium Waste not consumed"
 
 def test_db():
     wire = db.recipes_by_name("Wire")
     assert wire, "Wire recipe not found"
     assert isinstance(wire, Recipe), "Bad type for recipe"
     assert wire.name == "Wire", "Incorrect recipe found"
+
 
 
 def test_get_building_by_class():
