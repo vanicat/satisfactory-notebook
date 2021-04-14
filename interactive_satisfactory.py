@@ -11,16 +11,12 @@ import ipywidgets as widgets
 
 # In[5]:
 
-def interactive_search(callback, search, add_buttons):
+def interactive_search(search, add_buttons):
     """search for items or recipe"""
     
     def on_search(_):
         result = search(search_widget.value)
         choose_options.options = result
-        
-    def on_choose(_):
-        if callback is not None:
-            callback(choose_options.value)
         
     search_widget = widgets.Text()
     search_button = widgets.Button(description = "search")
@@ -119,12 +115,6 @@ def interactiveOfProduction(result, name, db, margin=1):
         with log:
             print(f"{name}.add_recipe({repr(selectRecipe.value)}, {quantityItem.value})")
         update()
-                   
-    def on_select_item(item):
-        update()
-    
-    def on_select_recipe(recipe):
-        update()
         
     def on_consume(_):
         if selectItem.value is not None and selectRecipe.value is not None:
@@ -185,7 +175,7 @@ def interactiveOfProduction(result, name, db, margin=1):
     recipeBox = widgets.VBox(description = 'recipe')
     
     log = widgets.Output()
-    searchItem = interactive_search(on_select_item, db.search_items_name, add_buttons=[
+    searchItem = interactive_search(db.search_items_name, add_buttons=[
         {
             'name': 'product',
             'callback': on_recipes_by_product
@@ -196,7 +186,7 @@ def interactiveOfProduction(result, name, db, margin=1):
         }
     ])
     selectItem = searchItem.choose_options
-    searchRecipe = interactive_search(on_select_recipe, db.search_recipes_name, add_buttons=[
+    searchRecipe = interactive_search(db.search_recipes_name, add_buttons=[
         {
             'name': 'product',
             'callback': on_products_by_recipe
