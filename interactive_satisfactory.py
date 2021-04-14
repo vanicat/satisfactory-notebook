@@ -27,7 +27,7 @@ def print_recipe(recipe: sdb.Recipe, n: float) -> None:
 
 def interactive_search(search: Callable, add_buttons: list) -> widgets.Widget:
     """search for items or recipe"""
-    
+
     def on_search(_):
         result = search(search_widget.value)
         choose_options.options = result
@@ -63,6 +63,12 @@ def interactive_search(search: Callable, add_buttons: list) -> widgets.Widget:
 # In[20]:
 def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.SatisfactoryDb', margin=1) -> widgets.Widget:
     buttonLayout = widgets.Layout(width='80%', align='left', align_items='flex-start')
+
+    def log_it(it):
+        with log:
+            if name:
+                print(f"{name}.", end ='')
+            print(it)
 
     def set_quantity(q):
         if isinstance(q, sympy.Number) or isinstance(q, float) or isinstance(q, int):
@@ -142,35 +148,30 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
             
     def on_add_item(v):
         result.add_product(selectItem.value, get_quantity())
-        with log:
-            print(f"{name}.add_product({repr(selectItem.value)}, {get_quantity()})")
+        log_it(f"add_product({repr(selectItem.value)}, {get_quantity()})")
         update()
             
     def on_add_factory(v):
         result.add_recipe(selectRecipe.value, get_quantity())
-        with log:
-            print(f"{name}.add_recipe({repr(selectRecipe.value)}, {get_quantity()})")
+        log_it(f"add_recipe({repr(selectRecipe.value)}, {get_quantity()})")
         update()
         
     def on_consume(_):
         if selectItem.value is not None and selectRecipe.value is not None:
             result.consume_with_recipe(selectRecipe.value, selectItem.value, get_quantity())
-            with log:
-                print(f"{name}.consume_with_recipe({repr(selectRecipe.value)}, {repr(selectItem.value)}, {get_quantity()})")
+            log_it(f"consume_with_recipe({repr(selectRecipe.value)}, {repr(selectItem.value)}, {get_quantity()})")
         update()
             
     def on_produce(_):
         if selectItem.value is not None and selectRecipe.value is not None:
             result.produce_with_recipe(selectRecipe.value, selectItem.value, get_quantity())
-            with log:
-                print(f"{name}.produce_with_recipe({repr(selectRecipe.value)}, {repr(selectItem.value)}, {get_quantity()})")
+            log_it(f"produce_with_recipe({repr(selectRecipe.value)}, {repr(selectItem.value)}, {get_quantity()})")
         update()
         
     def on_construct(_):
         if selectRecipe.value is not None:
             result.construct(selectRecipe.value, get_quantity())
-            with log:
-                print(f"{name}.construct({repr(selectRecipe.value)}, {get_quantity()})")
+            log_it(f"construct({repr(selectRecipe.value)}, {get_quantity()})")
         update()
 
     def on_recipes_by_product(item):

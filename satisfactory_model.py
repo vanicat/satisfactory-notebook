@@ -12,7 +12,7 @@ class ResultOfProd:
     """ResultOfProd() make an object where you can add ressource, or recipe to plan production line
     
     quantity is a quantity by minute"""
-    def __init__(self, name = "None", margin = 1):
+    def __init__(self, name = None, margin = 1):
         self.available =  {}
         self.needed =  {}
         self._recipes = {}
@@ -178,7 +178,8 @@ class ResultOfProd:
         return self
     
     def __exit__(self, *args):
-        if len(self.name) < 4 or self.name[0:4] != '    ':
+        name = self.name
+        if self.name and (len(self.name) < 4 or self.name[0:4] != '    '):
             name = '    ' + self.name
         else:
             name = self.name
