@@ -78,7 +78,7 @@ class ResultOfProd:
     def add_recipe(self, name, n):
         """add n producter using recipe"""
         if name in self._recipes:
-            prod = self.self._recipes[name]
+            prod = self._recipes[name]
             prod.add(n)
         else:
         recipe = sdb.db.recipes_by_name(name)
