@@ -41,10 +41,10 @@ class Production():
             yield (item, quantity * n / self.recipe.time)
 
     def ingredients(self, n = None):
-        return self._yield_quantity(self.recipe.ingredient, n)
+        return self._yield_quantity(self.recipe.ingredients, n)
 
     def products(self, n):
-        return self._yield_quantity(self.recipe.product, n)
+        return self._yield_quantity(self.recipe.products, n)
 
 
 # In[18]:
@@ -72,7 +72,7 @@ class ResultOfProd:
             self.available[p] = q
     
     def consume_product(self, p, q):
-        """Warning: you can consume product that are not there"""
+        """Warning: you can consume products that are not there"""
         if p in self.needed:
             self.needed[p] += q
         else:
@@ -97,28 +97,28 @@ class ResultOfProd:
 
         prod.add(n)
             
-    def consume_with_recipe(self, recipe_name, product, q = None):
+    def consume_with_recipe(self, recipe_name, item, q = None):
         if getattr(q, '__getitem__', False):
-            q = q[product]
+            q = q[item]
         if q is None:
-            q = self[product]
+            q = self[item]
         recipe = sdb.db.recipes_by_name(recipe_name)
         n = 0
-        for p, q2 in recipe.ingredient:
-            if p == product:
+        for p, q2 in recipe.ingredients:
+            if p == item:
                 n = q / (q2 / recipe.time)
         
         self.add_recipe(recipe_name, n)
     
-    def produce_with_recipe(self, recipe_name, product, q = None):
+    def produce_with_recipe(self, recipe_name, item, q = None):
         if getattr(q, '__getitem__', False):
-            q = -q[product]
+            q = -q[item]
         if q is None:
-            q = -self[product]
+            q = -self[item]
         recipe = sdb.db.recipes_by_name(recipe_name)
         n = 0
-        for p, q2 in recipe.product:
-            if p == product:
+        for p, q2 in recipe.products:
+            if p == item:
                 n = q / (q2 / recipe.time)
         
         self.add_recipe(recipe_name, n)

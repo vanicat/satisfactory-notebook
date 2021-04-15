@@ -44,8 +44,8 @@ def test_production():
     wire = db.recipes_by_name("Wire")
     wireProd = Production(prod, wire)
     wireProd.add(3)
-    ingredient = list(wireProd.ingredients(3))
-    assert ('Copper Ingot', 45) in ingredient
+    ingredients = list(wireProd.ingredients(3))
+    assert ('Copper Ingot', 45) in ingredients
 
 if __name__ == "__main__":
     import pytest

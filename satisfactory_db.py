@@ -1,7 +1,7 @@
 from collections import namedtuple
 from sqlalchemy import create_engine, Table, select, MetaData, and_
 
-Recipe = namedtuple('Recipe', ['name', 'alternate', 'time', 'ingredient', 'product', 'producedIn'])
+Recipe = namedtuple('Recipe', ['name', 'alternate', 'time', 'ingredients', 'products', 'producedIn'])
 
 
 class SatisfactoryDb:

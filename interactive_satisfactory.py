@@ -17,11 +17,11 @@ from sympy.parsing.sympy_parser import parse_expr
 
 # In[5]:
 def print_recipe(recipe: sdb.Recipe, n: float) -> None:
-    print('    ingredient:')
-    for ing, q in recipe.ingredient:
+    print('    ingredients:')
+    for ing, q in recipe.ingredients:
         print(f"        {ing}: {simplify(n*q/recipe.time)}/min")
-    print('    product')
-    for ing, q in recipe.product:
+    print('    products')
+    for ing, q in recipe.products:
         print(f"        {ing}: {simplify(n*q/recipe.time)}/min")
 
 
@@ -211,18 +211,18 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
     log = widgets.Output()
     searchItem = interactive_search(db.search_items_name, add_buttons=[
         {
-            'name': 'product',
+            'name': 'products',
             'callback': on_recipes_by_product
         },
         {
-            'name': 'ingredient',
+            'name': 'ingredients',
             'callback': on_recipes_by_ingredient
         }
     ])
     selectItem = searchItem.choose_options
     searchRecipe = interactive_search(db.search_recipes_name, add_buttons=[
         {
-            'name': 'product',
+            'name': 'products',
             'callback': on_products_by_recipe
         },
         {

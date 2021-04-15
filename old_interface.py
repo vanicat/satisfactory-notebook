@@ -43,9 +43,9 @@ class Option:
         return usines
     
     def produce(self, amount):
-        ingredient = [(product, q * self.tick_per_m(amount)) for (product, q) in self.ingredients]
-        subproduct = [(product, q * self.tick_per_m(amount)) for (product, q) in self.subproduct]
-        return ingredient, subproduct
+        ingredients = [(product, q * self.tick_per_m(amount)) for (product, q) in self.ingredients]
+        products = [(product, q * self.tick_per_m(amount)) for (product, q) in self.subproduct]
+        return ingredients, products
 
 class ResultFromProd:
     """Result(product, quantity) make an object to search how to build stuff.
