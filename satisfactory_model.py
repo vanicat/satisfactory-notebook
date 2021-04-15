@@ -6,7 +6,8 @@ from IPython.display import display
 import math
 
 class Production():
-    def __init__(self, recipe:sdb.Recipe, planned:float, constructed = 0):
+    def __init__(self, model:'ResultOfProd', recipe:sdb.Recipe, planned:float, constructed = 0):
+        self.model = model
         self.recipe = recipe
         self.plan = planned
         self.done = constructed
@@ -74,15 +75,15 @@ class ResultOfProd:
         elif quality == "normal":
             q = 600/1
         self.add_product(p, q)
-        
+    
     def add_recipe(self, name, n):
         """add n producter using recipe"""
         if name in self._recipes:
             prod = self._recipes[name]
             prod.add(n)
         else:
-        recipe = sdb.db.recipes_by_name(name)
-            prod = Production(recipe, n)
+            recipe = sdb.db.recipes_by_name(name)
+            prod = Production(self, recipe, n)
             self._recipes[name] = prod
         
 
