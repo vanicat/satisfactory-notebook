@@ -6,18 +6,10 @@ from IPython.display import display
 import math
 
 class Production():
-    """There should never be two different production for the same recipe in one model"""
-
     def __init__(self, recipe:sdb.Recipe, planned:float, constructed = 0):
         self.recipe = recipe
         self.plan = planned
         self.done = constructed
-
-    def __hash__(self) -> int:
-        return hash(self.recipe)
-
-    def __eq__(self, o: object) -> bool:
-        return self.recipe == o.recipe
 
     def __str__(self) -> str:
         if self.done > 0:
