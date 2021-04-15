@@ -18,6 +18,9 @@ def test_interactive_nuclear():
         consume_with_recipe('Alternate: Fertile Uranium', 'Uranium Waste')
         assert prod['Uranium Waste'] == 0, "Uranium Waste not consumed"
 
+        building = prod.building()
+        assert 'Nuclear Power Plant' in building
+
 def test_interactive_turbofuel():
     prod = ResultOfProd("prod")
     x = sympy.Symbol('x')

@@ -194,10 +194,11 @@ class ResultOfProd:
 
     def building(self):
         result = {}
-        for recipe, q in self._recipes.items():
+        for name, producer in self._recipes.items():
+            q = producer.plan
             if q != 0:
-                p = sdb.db.recipes_by_name(recipe).producedIn
-                c = self.constructed.get(recipe, 0)
+                p = producer.recipe.producedIn
+                c = producer.done
                 q = math.ceil(q)
                 if p in result:
                     old_c, old_q = result[p]
