@@ -25,6 +25,47 @@ def print_recipe(recipe: sdb.Recipe, n: float) -> None:
         print(f"        {ing}: {simplify(n*q/recipe.time)}/min")
 
 
+def make_items_list(label_text, items, setter, update): 
+    def make_observer(item):
+        def observer(event):
+            if event['type'] == 'change':
+                setter(item, parse_expr(event['new']))
+                update()
+        return observer
+    
+    label = widgets.Label(label_text)
+    widget_list = [label]
+    for item, q in items:
+        text = widgets.Text(description = item, value = str(q))
+        text.layout.margin = "5px"
+        text.style.description_width = 'initial'
+        text.continuous_update = False
+        text.observe(make_observer(item), names="value")
+        widget_list.append(text)
+    box = widgets.VBox(widget_list)
+    box.layout.border = "solid black 2px"
+    box.layout.margin = '0px 10px 4px 10px'
+    return box
+
+def interactive_production_display(production: 'sm.Production', update):
+    def change_planned(event):
+        if event['type'] == 'change':
+            production.set(parse_expr(event['new']))
+            update()
+
+    num_text = widgets.Text(value=str(production.plan))
+    num_text.continuous_update = False
+    num_text.observe(change_planned, names="value")
+
+    num_box = widgets.VBox([widgets.Label("Planned"), num_text])
+
+    i_box = make_items_list("ingredients:", production.ingredients(), production.set_consuption, update)
+    p_box = make_items_list("products:", production.products(), production.set_production, update)
+
+    box = widgets.HBox([num_box, i_box, p_box])
+    return box
+
+
 def interactive_search(search: Callable, add_buttons: list) -> widgets.Widget:
     """search for items or recipe"""
 
@@ -89,21 +130,19 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
             searchItem.choose_options.value = item
         return callback
     
-    def selectRecipeFun(recipe, n, output):
+    def selectRecipeFun(production: 'sm.Production', output):
         def callback(_):
-            set_quantity(n)
-            searchRecipe.choose_options.options = [ recipe.name ]
-            searchRecipe.choose_options.value = recipe.name
+            set_quantity(production.plan)
+            searchRecipe.choose_options.options = [ production.recipe.name ]
+            searchRecipe.choose_options.value = production.recipe.name
+            #TODO: maybe not create a widget on uncollpasing, just hide it.
             if output.collapse:
                 output.collapse = False
-                with output:
-                    print_recipe(recipe, n)
+                output.children = [interactive_production_display(production, update)]
             else:
                 output.collapse = True
-                with output:
-                    clear_output()
+                output.children = []
 
-        
         return callback
     
     def update():
@@ -141,10 +180,10 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
                     button_style=''
 
                 button = widgets.Button(description = str(prod), layout=buttonLayout, button_style=button_style)
-                button_output = widgets.Output()               
+                button_output = widgets.Box()               
                 button_box = widgets.VBox([button, button_output])
                 button_output.collapse = True
-                button.on_click(selectRecipeFun(prod.recipe, q, button_output))
+                button.on_click(selectRecipeFun(prod, button_output))
                 children.append(button_box)
                 
             recipeBox.children = children
