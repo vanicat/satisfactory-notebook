@@ -110,11 +110,13 @@ class ResultOfProd:
 
         prod.add(n)
             
-    def consume_with_recipe(self, recipe_name, item, q = None):
+    def consume_with_recipe(self, recipe_name, item, q = None, prop = 1):
         if getattr(q, '__getitem__', False):
             q = q[item]
         if q is None:
             q = self[item]
+        q = q * prop
+
         recipe = sdb.db.recipes_by_name(recipe_name)
         n = 0
         for p, q2 in recipe.ingredients:
@@ -123,11 +125,13 @@ class ResultOfProd:
         
         self.add_recipe(recipe_name, n)
     
-    def produce_with_recipe(self, recipe_name, item, q = None):
+    def produce_with_recipe(self, recipe_name, item, q = None, prop = 1):
         if getattr(q, '__getitem__', False):
             q = -q[item]
         if q is None:
             q = -self[item]
+        q = q * prop
+
         recipe = sdb.db.recipes_by_name(recipe_name)
         n = 0
         for p, q2 in recipe.products:
@@ -225,7 +229,7 @@ for method in vars(ResultOfProd):
     if len(method) > 2 and method[0:2] == '__':
         continue
     def f(m):
-        return lambda *args: getattr(current_result, m)(*args)
+        return lambda *args, **kwargs: getattr(current_result, m)(*args, **kwargs)
     globals()[method] = f(method)
 
 def items(it):
