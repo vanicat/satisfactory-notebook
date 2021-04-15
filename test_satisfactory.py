@@ -1,6 +1,7 @@
 from satisfactory import *
 from satisfactory_model import Production
 from satisfactory_db import Recipe, db
+from interactive_satisfactory import interactive_production_display
 import sympy
 import math
 
@@ -45,7 +46,12 @@ def test_production():
     wireProd = Production(prod, wire)
     wireProd.add(3)
     ingredients = list(wireProd.ingredients(3))
+    interactive_production_display(wireProd, lambda *args: None)
     assert ('Copper Ingot', 45) in ingredients
+    wireProd.set_production("Wire", 10)
+    assert math.isclose(prod['Wire'], 10)
+    wireProd.set_consuption("Copper Ingot", 20)
+    assert math.isclose(prod['Copper Ingot'], -20)
 
 if __name__ == "__main__":
     import pytest

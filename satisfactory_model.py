@@ -30,6 +30,19 @@ class Production():
     def set(self, n):
         diff = n - self.plan
         self.add(diff)
+
+    def _set_quantity(self, items, wanted_item, wanted_quantity):
+        for item, quantity in items:
+            if item == wanted_item:
+                n = self.recipe.time * wanted_quantity / quantity
+                self.set(n)
+                break
+
+    def set_production(self, item, quantity):
+        self._set_quantity(self.recipe.products, item, quantity)
+
+    def set_consuption(self, item, quantity):
+        self._set_quantity(self.recipe.ingredients, item, quantity)
     
     def build(self, n):
         self.done += n
