@@ -6,10 +6,10 @@ from IPython.display import display
 import math
 
 class Production():
-    def __init__(self, model:'ResultOfProd', recipe:sdb.Recipe, planned:float, constructed = 0):
+    def __init__(self, model:'ResultOfProd', recipe:sdb.Recipe, constructed = 0):
         self.model = model
         self.recipe = recipe
-        self.plan = planned
+        self.plan = 0
         self.done = constructed
 
     def __str__(self) -> str:
@@ -20,6 +20,12 @@ class Production():
 
     def add(self, n):
         self.plan += n
+        
+        for item, quantity in self.ingredients(n):
+            self.model.consume_product(item, quantity)
+            
+        for item, quantity in self.products(n):
+            self.model.add_product(item, quantity)
     
     def build(self, n):
         self.done += n
@@ -80,18 +86,12 @@ class ResultOfProd:
         """add n producter using recipe"""
         if name in self._recipes:
             prod = self._recipes[name]
-            prod.add(n)
         else:
             recipe = sdb.db.recipes_by_name(name)
-            prod = Production(self, recipe, n)
+            prod = Production(self, recipe)
             self._recipes[name] = prod
-        
 
-        for item, quantity in prod.ingredients(n):
-            self.consume_product(item, quantity)
-            
-        for item, quantity in prod.products(n):
-            self.add_product(item, quantity)
+        prod.add(n)
             
     def consume_with_recipe(self, recipe_name, product, q = None):
         if getattr(q, '__getitem__', False):
