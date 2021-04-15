@@ -9,6 +9,7 @@ def test_interactive_nuclear():
     with ResultOfProd("nuclear", margin = 0.0001) as prod:
         add_recipe('Uranium Fuel Rod in Nuclear Power Plant', 2)
         add_recipe('Uranium Fuel Rod in Nuclear Power Plant', 2)
+        assert math.isclose(prod['Water'], -300 * 4), "Incorrect use of water"
         assert math.isclose(prod['Uranium Fuel Rod'], -0.8), "Incorrect prod for fuel rod: {prod['Uranium Fuel Rod']}"
         assert prod['Uranium Waste'] > 0, "No uranium waste produced"
         assert prod['electricity'] > 0, "No eletricity produced"
