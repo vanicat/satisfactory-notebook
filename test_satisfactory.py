@@ -42,7 +42,7 @@ def test_get_building_by_class():
 def test_production():
     wire = db.recipes_by_name("Wire")
     wireProd = Production(wire, 3)
-    ingredient = list(wireProd.ingredient(3))
+    ingredient = list(wireProd.ingredients(3))
     assert ('Copper Ingot', 45) in ingredient
 
 if __name__ == "__main__":

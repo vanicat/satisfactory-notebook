@@ -29,10 +29,10 @@ class Production():
         for item, quantity in things:
             yield (item, quantity * n / self.recipe.time)
 
-    def ingredient(self, n = None):
+    def ingredients(self, n = None):
         return self._yield_quantity(self.recipe.ingredient, n)
 
-    def product(self, n):
+    def products(self, n):
         return self._yield_quantity(self.recipe.product, n)
 
 
@@ -84,12 +84,12 @@ class ResultOfProd:
         recipe = sdb.db.recipes_by_name(name)
             prod = Production(recipe, n)
             self._recipes[name] = prod
+        
 
-            
-        for item, quantity in prod.ingredient(n):
+        for item, quantity in prod.ingredients(n):
             self.consume_product(item, quantity)
             
-        for item, quantity in prod.product(n):
+        for item, quantity in prod.products(n):
             self.add_product(item, quantity)
             
     def consume_with_recipe(self, recipe_name, product, q = None):
