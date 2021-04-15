@@ -26,6 +26,10 @@ class Production():
             
         for item, quantity in self.products(n):
             self.model.add_product(item, quantity)
+
+    def set(self, n):
+        diff = n - self.plan
+        self.add(diff)
     
     def build(self, n):
         self.done += n
