@@ -43,7 +43,7 @@ class Production():
     def ingredients(self, n = None):
         return self._yield_quantity(self.recipe.ingredients, n)
 
-    def products(self, n):
+    def products(self, n = None):
         return self._yield_quantity(self.recipe.products, n)
 
 
