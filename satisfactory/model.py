@@ -86,15 +86,6 @@ class Model:
             self.needed[p] += q
         else:
             self.needed[p] = q
-        
-    #TODO: make quality from Enum or make fake recipe
-    def add_node(self, p, quality):
-        q = 300/1
-        if quality == "pure":
-            q = 780/1
-        elif quality == "normal":
-            q = 600/1
-        self.add_product(p, q)
     
     def add_recipe(self, name, n):
         """add n producter using recipe"""
