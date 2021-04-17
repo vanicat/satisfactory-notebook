@@ -1,5 +1,6 @@
 from collections import namedtuple
 from sqlalchemy import create_engine, Table, select, MetaData, and_
+from sympy import nsimplify
 
 Recipe = namedtuple('Recipe', ['name', 'alternate', 'time', 'ingredients', 'products', 'producedIn'])
 
@@ -40,7 +41,7 @@ class SatisfactoryDb:
         if producer:
             producedIn = producer
 
-        return Recipe(name, alternate, time / 60, ingredients, products, producedIn)
+        return Recipe(name, alternate, nsimplify(time / 60), ingredients, products, producedIn)
 
     def building_name_by_class(self, _class):
         request = select([self.buildings.c.name]).where(self.buildings.c.className == _class)
@@ -104,7 +105,7 @@ class SatisfactoryDb:
                         self.recipe_ingredients.c.item == self.items.c.id,
                     )
                 )
-        return self.engine.execute(request).fetchall()
+        return [(name, nsimplify(amount)) for name, amount in self.engine.execute(request).fetchall()]
     
     def get_subproducts(self, r_id) -> list:
         request = select([self.items.c.name, self.recipe_products.c.amount]).where(
@@ -113,7 +114,7 @@ class SatisfactoryDb:
                         self.recipe_products.c.item == self.items.c.id,
                     )
                 )
-        return self.engine.execute(request).fetchall()
+        return [(name, nsimplify(amount)) for name, amount in self.engine.execute(request).fetchall()]
 
     def shopping_list(self, buildings_dict):
         def add(dict1, k, value):
