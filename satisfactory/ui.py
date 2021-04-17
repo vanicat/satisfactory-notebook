@@ -7,8 +7,8 @@ from typing import Callable
 from ipywidgets.widgets.widget_box import VBox
 from IPython.display import clear_output
 import ipywidgets as widgets
-import satisfactory_model as sm
-import satisfactory_db as sdb
+from .model import Production, Model
+from .db import Recipe, SatisfactoryDb
 #import matplotlib.pyplot as plt
 import sympy
 from sympy import nsimplify, simplify
@@ -16,7 +16,7 @@ from sympy.parsing.sympy_parser import parse_expr
 
 
 # In[5]:
-def print_recipe(recipe: sdb.Recipe, n: float) -> None:
+def print_recipe(recipe: Recipe, n: float) -> None:
     print('    ingredients:')
     for ing, q in recipe.ingredients:
         print(f"        {ing}: {simplify(n*q/recipe.time)}/min")
@@ -47,7 +47,7 @@ def make_items_list(label_text, items, setter, update):
     box.layout.margin = '0px 10px 4px 10px'
     return box
 
-def interactive_production_display(production: 'sm.Production', update):
+def interactive_production_display(production: 'Production', update):
     def change_planned(event):
         if event['type'] == 'change':
             production.set(parse_expr(event['new']))
@@ -102,7 +102,7 @@ def interactive_search(search: Callable, add_buttons: list) -> widgets.Widget:
 
 
 # In[20]:
-def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.SatisfactoryDb', margin=1) -> widgets.Widget:
+def interactiveOfProduction(result: 'Model', name: str, db: 'SatisfactoryDb', margin=1) -> widgets.Widget:
     buttonLayout = widgets.Layout(width='80%', align='left', align_items='flex-start')
 
     def log_it(it):
@@ -130,7 +130,7 @@ def interactiveOfProduction(result: 'sm.ResultOfProd', name: str, db: 'sdb.Satis
             searchItem.choose_options.value = item
         return callback
     
-    def selectRecipeFun(production: 'sm.Production', output):
+    def selectRecipeFun(production: 'Production', output):
         def callback(_):
             set_quantity(production.plan)
             searchRecipe.choose_options.options = [ production.recipe.name ]

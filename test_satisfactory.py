@@ -1,7 +1,7 @@
 from satisfactory import *
-from satisfactory_model import Production
-from satisfactory_db import Recipe, db
-from interactive_satisfactory import interactive_production_display
+from satisfactory.model import Production
+from satisfactory.db import Recipe, db
+from satisfactory.ui import interactive_production_display
 import sympy
 import math
 
@@ -22,7 +22,7 @@ def test_interactive_nuclear():
         assert 'Nuclear Power Plant' in building
 
 def test_interactive_turbofuel():
-    prod = ResultOfProd("prod")
+    prod = Model("prod")
     x = sympy.Symbol('x')
     prod.add_product('Turbofuel', x)
     prod.consume_with_recipe('Turbofuel in Fuel Generator', 'Turbofuel')
@@ -45,7 +45,7 @@ def test_get_building_by_class():
 
 
 def test_production():
-    prod = ResultOfProd("prod")
+    prod = Model("prod")
     wire = db.recipes_by_name("Wire")
     wireProd = Production(prod, wire)
     wireProd.add(3)

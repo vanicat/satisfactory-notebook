@@ -1,12 +1,10 @@
 from typing import Dict
-from interactive_satisfactory import interactiveOfProduction
-from utils import myround
-import satisfactory_db as sdb
-from IPython.display import display
+from .utils import myround
+from .db import Recipe, db
 import math
 
 class Production():
-    def __init__(self, model:'ResultOfProd', recipe:sdb.Recipe, constructed = 0):
+    def __init__(self, model:'Model', recipe:Recipe, constructed = 0):
         self.model = model
         self.recipe = recipe
         self.plan = 0
@@ -61,10 +59,8 @@ class Production():
 
 
 # In[18]:
-current_result = None
-
-class ResultOfProd:
-    """ResultOfProd() make an object where you can add ressource, or recipe to plan production line
+class Model:
+    """Model() make an object where you can add ressource, or recipe to plan production line
     
     quantity is a quantity by minute"""
     def __init__(self, name = None, margin = 1):
@@ -91,6 +87,7 @@ class ResultOfProd:
         else:
             self.needed[p] = q
         
+    #TODO: make quality from Enum or make fake recipe
     def add_node(self, p, quality):
         q = 300/1
         if quality == "pure":
@@ -104,7 +101,7 @@ class ResultOfProd:
         if name in self._recipes:
             prod = self._recipes[name]
         else:
-            recipe = sdb.db.recipes_by_name(name)
+            recipe = db.recipes_by_name(name)
             prod = Production(self, recipe)
             self._recipes[name] = prod
 
@@ -117,7 +114,7 @@ class ResultOfProd:
             q = self[item]
         q = q * prop
 
-        recipe = sdb.db.recipes_by_name(recipe_name)
+        recipe = db.recipes_by_name(recipe_name)
         n = 0
         for p, q2 in recipe.ingredients:
             if p == item:
@@ -132,7 +129,7 @@ class ResultOfProd:
             q = -self[item]
         q = q * prop
 
-        recipe = sdb.db.recipes_by_name(recipe_name)
+        recipe = db.recipes_by_name(recipe_name)
         n = 0
         for p, q2 in recipe.products:
             if p == item:
@@ -207,32 +204,11 @@ class ResultOfProd:
                     result[p] = (c, q)
         return result
     
-    def __enter__(self):
-        global current_result
-        current_result = self
-        return self
-    
-    def __exit__(self, *args):
-        name = self.name
-        if self.name and (len(self.name) < 4 or self.name[0:4] != '    '):
-            name = '    ' + self.name
-        else:
-            name = self.name
-        display(interactiveOfProduction(self, name, sdb.db, self.margin))
-    
     def __getitem__(self, name):
         qa = self.available[name] if name in self.available else 0
         qn = self.needed[name] if name in self.needed else 0
         return qa - qn
 
 # In[20]:
-for method in vars(ResultOfProd):
-    if len(method) > 2 and method[0:2] == '__':
-        continue
-    def f(m):
-        return lambda *args, **kwargs: getattr(current_result, m)(*args, **kwargs)
-    globals()[method] = f(method)
 
-def items(it):
-    return current_result[it]
 

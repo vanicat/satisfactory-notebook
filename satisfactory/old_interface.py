@@ -1,7 +1,7 @@
 from collections import namedtuple
 from typing import OrderedDict
 import networkx as nx
-from satisfactory_model import db
+from .db import db
 from IPython.display import display, Markdown, clear_output
 import math
 import ipywidgets as widgets
