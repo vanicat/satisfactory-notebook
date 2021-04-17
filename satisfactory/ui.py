@@ -107,6 +107,7 @@ def interactiveOfProduction(result: 'Model', name: str, db: 'SatisfactoryDb', ma
 
     def log_it(it):
         with log:
+            print('    ', end='')
             if name:
                 print(f"{name}.", end ='')
             print(it)

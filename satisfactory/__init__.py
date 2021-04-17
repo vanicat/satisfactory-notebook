@@ -26,6 +26,8 @@ class ResultOfProd(Model):
     def __exit__(self, *args):
         if self.name is not None:
             name = self.name.strip()
+        else:
+            name = None
         display(interactiveOfProduction(self, name, db, self.margin))
 
 def make_function_from_method(m):
