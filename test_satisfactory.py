@@ -1,11 +1,18 @@
 from satisfactory import *
 from satisfactory.model import Production
-from satisfactory.db import Recipe, db
+from satisfactory.db import Recipe, db, SatisfactoryDb
 from satisfactory.ui import interactive_production_display
 import sympy
 import math
 
+def test_init_db():
+    init()
+    assert db() is not None
+    assert isinstance(db(), SatisfactoryDb), f"db is fo type {type(db())}"
+
+
 def test_interactive_nuclear():
+    init()
     with ResultOfProd("nuclear", margin = 0.0001) as prod:
         add_recipe('Uranium Fuel Rod in Nuclear Power Plant', 2)
         add_recipe('Uranium Fuel Rod in Nuclear Power Plant', 2)
@@ -22,7 +29,7 @@ def test_interactive_nuclear():
         assert 'Nuclear Power Plant' in building
 
 def test_interactive_turbofuel():
-    prod = Model("prod")
+    prod = Model(db(), "prod")
     x = sympy.Symbol('x')
     prod.add_product('Turbofuel', x)
     prod.consume_with_recipe('Turbofuel in Fuel Generator', 'Turbofuel')
@@ -30,7 +37,7 @@ def test_interactive_turbofuel():
     assert sympy.nsimplify(prod['electricity']) == 2 * 150 * x / 9
 
 def test_db():
-    wire = db.recipes_by_name("Wire")
+    wire = db().recipes_by_name("Wire")
     assert wire, "Wire recipe not found"
     assert isinstance(wire, Recipe), "Bad type for recipe"
     assert wire.name == "Wire", "Incorrect recipe found"
@@ -38,15 +45,15 @@ def test_db():
 
 
 def test_get_building_by_class():
-    building = db.building_name_by_class('NoneClass')
+    building = db().building_name_by_class('NoneClass')
     assert building is None
-    building = db.building_name_by_class('Desc_Foundation_Frame_01_C')
+    building = db().building_name_by_class('Desc_Foundation_Frame_01_C')
     assert building == "Frame Foundation 8m x 4m"
 
 
 def test_production():
-    prod = Model("prod")
-    wire = db.recipes_by_name("Wire")
+    prod = Model(db(), "prod")
+    wire = db().recipes_by_name("Wire")
     wireProd = Production(prod, wire)
     wireProd.add(3)
     ingredients = list(wireProd.ingredients(3))

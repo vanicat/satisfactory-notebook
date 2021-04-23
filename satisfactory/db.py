@@ -139,7 +139,14 @@ class SatisfactoryDb:
         
         return shopping_list
 
-db = SatisfactoryDb()
+_db = None
+def db():
+    return _db
+
+def init():
+    global _db
+    if _db is None: 
+        _db = SatisfactoryDb()
 
 if __name__ == "__main__":
     db = SatisfactoryDb()

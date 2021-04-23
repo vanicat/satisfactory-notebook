@@ -81,12 +81,12 @@ class ResultFromProd:
             self.add_produced(product, quantity)
         else:
             self.needed[product] = quantity
-            possibility = db.search_possibility_by_product(product)
+            possibility = db().search_possibility_by_product(product)
             
             new_options = {}
             for r_id, r_name, r_time, r_amount in possibility:
-                ingredients = db.get_ingredients(r_id)
-                subproducts = db.get_subproducts(r_id)
+                ingredients = db().get_ingredients(r_id)
+                subproducts = db().get_subproducts(r_id)
                 new_options[r_name] = Option(r_name, r_time, r_amount, ingredients, subproducts)
             self.options[product] = new_options
 

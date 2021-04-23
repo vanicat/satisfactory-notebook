@@ -1,4 +1,5 @@
-from .db import db
+from . import db as sdb
+from .db import db, init
 from .model import Model, Production
 from .ui import interactiveOfProduction
 from IPython.display import display
@@ -7,16 +8,20 @@ __all__ = [
     'db', 'Model', 'interactiveOfProduction', 'ResultOfProd', 'shopping_list',
     'Production', 'construct', 'add_product', 'consume_product', 'add_recipe',
     'consume_with_recipe', 'produce_with_recipe', 'products',
-    'recipes', 'building', 'items'
+    'recipes', 'building', 'items', 'init'
 ]
 
 def shopping_list(buildings_dict):
-    return db.shopping_list(buildings_dict)
+    return db().shopping_list(buildings_dict)
 
 current_result = None
 
 class ResultOfProd(Model):
     """A wraper for model and interactive display of it"""
+    def __init__(self, name = None, margin = 1, db = None):
+        if db is None:
+            db = sdb.db()
+        super().__init__(db, name, margin)
         
     def __enter__(self):
         global current_result
@@ -28,7 +33,7 @@ class ResultOfProd(Model):
             name = self.name.strip()
         else:
             name = None
-        display(interactiveOfProduction(self, name, db, self.margin))
+        display(interactiveOfProduction(self, name, self.db, self.margin))
 
 def make_function_from_method(m):
     return lambda *args, **kwargs: getattr(current_result, m)(*args, **kwargs)

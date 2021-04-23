@@ -63,12 +63,13 @@ class Model:
     """Model() make an object where you can add ressource, or recipe to plan production line
     
     quantity is a quantity by minute"""
-    def __init__(self, name = None, margin = 1):
+    def __init__(self, db, name = None, margin = 1):
         self.available =  {}
         self.needed =  {}
         self._recipes : Dict[str, Production] = {}
         self.name = name
         self.margin = margin
+        self.db = db
         
     def construct(self, recipe, q):
         assert recipe in self._recipes
@@ -92,7 +93,7 @@ class Model:
         if name in self._recipes:
             prod = self._recipes[name]
         else:
-            recipe = db.recipes_by_name(name)
+            recipe = self.db.recipes_by_name(name)
             prod = Production(self, recipe)
             self._recipes[name] = prod
 
@@ -105,7 +106,7 @@ class Model:
             q = self[item]
         q = q * prop
 
-        recipe = db.recipes_by_name(recipe_name)
+        recipe = self.db.recipes_by_name(recipe_name)
         n = 0
         for p, q2 in recipe.ingredients:
             if p == item:
@@ -120,7 +121,7 @@ class Model:
             q = -self[item]
         q = q * prop
 
-        recipe = db.recipes_by_name(recipe_name)
+        recipe = self.db.recipes_by_name(recipe_name)
         n = 0
         for p, q2 in recipe.products:
             if p == item:
