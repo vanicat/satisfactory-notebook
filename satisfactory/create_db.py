@@ -3,10 +3,38 @@ import os
 
 from sqlalchemy import create_engine, Table, Column, Integer, String, Boolean, MetaData, Float
 
+def add_or_update_elem(engine, table, elem):
+    req = table.select().where(table.c.className == elem['className'])
+    it = engine.execute(req).fetchone()
+    if it is None:
+        ins = table.insert().values(elem)
+        a = engine.execute(ins)
+        return a.inserted_primary_key[0]
+    
+    table.update().where(table.c.className == elem['className']).values(elem)
+    return it[0]
+
+def add_related(engine, items, table, recipe_id, className, amount):
+    it = engine.execute(items.select().where(items.c.className == className)).fetchone()
+    if it is None:
+        print(f"can't find {className} in items")
+        return
+
+    prod_id = it[0]
+    ins = table.insert().values(recipe = recipe_id, item = prod_id, amount = amount)
+    engine.execute(ins)
+
+
+def delete_row(engine, table):
+    engine.execute(table.delete())
+
 def create_db(db_path, json_path):
     recipes_src, items_src, generators_src, miners_src, buildings_src = read_json(json_path)
 
     engine, recipes, items, recipe_ingredients, recipe_products, buildings = connect_db(db_path)
+
+    delete_row(engine, recipe_ingredients)
+    delete_row(engine, recipe_products)
 
     create_items(engine, items, items_src)
 
@@ -34,14 +62,11 @@ def recipes_for_extractor(engine, recipes, items, recipe_products):
         "inWorkshop": False,
         "producedIn": f"Desc_WaterPump_C"
     }
-    ins = recipes.insert().values(fake_recipe)
-    a = engine.execute(ins)
-    key = a.inserted_primary_key[0]
-    it = engine.execute(items.select().where(items.c.className == 'Desc_Water_C')).fetchone()
-    assert(it is not None)
-    prod_id = it[0]
-    ins = recipe_products.insert().values(recipe = key, item = prod_id, amount = 2)
-    engine.execute(ins)
+    
+    key = add_or_update_elem(engine, recipes, fake_recipe)
+    add_related(engine, items, recipe_products, key, 'Desc_Water_C', 2)
+
+
 
 def recipes_for_nodes(engine, recipes, items, recipe_products, items_src, miners_src):
     qualities = { 
@@ -68,14 +93,8 @@ def recipes_for_nodes(engine, recipes, items, recipe_products, items_src, miners
                     "inWorkshop": False,
                     "producedIn": f"Desc{miner['className'][5:]}"
                 }
-                ins = recipes.insert().values(fake_recipe)
-                a = engine.execute(ins)
-                key = a.inserted_primary_key[0]
-                it = engine.execute(items.select().where(items.c.className == ressource['className'])).fetchone()
-                assert(it is not None)
-                prod_id = it[0]
-                ins = recipe_products.insert().values(recipe = key, item = prod_id, amount = 1)
-                engine.execute(ins)
+                key = add_or_update_elem(engine, recipes, fake_recipe)
+                add_related(engine, items, recipe_products, key, ressource['className'], 1)
 
 def recipes_for_generator(engine, recipes, items, recipe_ingredients, recipe_products, items_src, generators_src, buildings_src):
     special_case = {
@@ -106,33 +125,16 @@ def recipes_for_generator(engine, recipes, items, recipe_ingredients, recipe_pro
                 "inWorkshop": False,
                 "producedIn": desc_class
             }
-            ins = recipes.insert().values(fake_recipe)
-            a = engine.execute(ins)
-            key = a.inserted_primary_key[0]
-            it = engine.execute(items.select().where(items.c.className == fuel)).fetchone()
-            assert(it is not None)
-            ing_id = it[0]
-            ins = recipe_ingredients.insert().values(recipe = key, item = ing_id, amount = 1)
-            engine.execute(ins)
+            key = add_or_update_elem(engine, recipes, fake_recipe)
+            add_related(engine, items, recipe_ingredients, key, fuel, 1)
             if gen['waterToPowerRatio'] > 0:
                 water_cons = time * gen['powerProduction'] * gen['waterToPowerRatio'] / 1000
-                it = engine.execute(items.select().where(items.c.name == "Water")).fetchone()
-                assert(it is not None)
-                ing_id = it[0]
-                ins = recipe_ingredients.insert().values(recipe = key, item = ing_id, amount = water_cons)
-                engine.execute(ins)
-            it = engine.execute(items.select().where(items.c.className == 'BP_Electricity_C')).fetchone()
-            assert(it is not None)
-            prod_id = it[0]
-            ins = recipe_products.insert().values(recipe = key, item = prod_id, amount = desc_fuel['energyValue']/60)
-            engine.execute(ins)
+                add_related(engine, items, recipe_ingredients, key, 'Desc_Water_C', water_cons)
+            add_related(engine, items, recipe_products, key, 'BP_Electricity_C', desc_fuel['energyValue']/60)
+
             if gen['className'] in special_case:
                 waste, amount = special_case[gen['className']][fuel]
-                it = engine.execute(items.select().where(items.c.className == waste)).fetchone()
-                assert(it is not None)
-                prod_id = it[0]
-                ins = recipe_products.insert().values(recipe = key, item = prod_id, amount = amount)
-                engine.execute(ins)
+                add_related(engine, items, recipe_products, key, waste, amount)
 
 def create_recipes(engine, recipes, items, buildings, recipe_ingredients, recipe_products, recipes_src):
     for r in recipes_src.values():
@@ -145,15 +147,10 @@ def create_recipes(engine, recipes, items, buildings, recipe_ingredients, recipe
             c['producedIn'] = c['producedIn'][0]
         else:
             c['producedIn'] = None
-        ins = recipes.insert().values(c)
-        a = engine.execute(ins)
-        key = a.inserted_primary_key[0]
+        
+        key = add_or_update_elem(engine, recipes, c)
         for ing in r['ingredients']:
-            it = engine.execute(items.select().where(items.c.className == ing['item'])).fetchone()
-            if it is not None:
-                ing_id = it[0]
-                ins = recipe_ingredients.insert().values(recipe = key, item = ing_id, amount = ing['amount'])
-                engine.execute(ins)
+            add_related(engine, items, recipe_ingredients, key, ing['item'], ing['amount'])
         if r['forBuilding']:
             for prod in r['products']:
                 assert prod['amount'] == 1
@@ -163,11 +160,7 @@ def create_recipes(engine, recipes, items, buildings, recipe_ingredients, recipe
                 engine.execute(ins)
         else:
             for prod in r['products']:
-                it = engine.execute(items.select().where(items.c.className == prod['item'])).fetchone()
-                if it is not None:
-                    prod_id = it[0]
-                    ins = recipe_products.insert().values(recipe = key, item = prod_id, amount = prod['amount'])
-                    engine.execute(ins)
+                add_related(engine, items, recipe_products, key, prod['item'], prod['amount'])
 
 def create_buildings(engine, buildings, buildings_src):
     for b in buildings_src.values():
@@ -179,19 +172,18 @@ def create_buildings(engine, buildings, buildings_src):
             for desc in b['size']:
                 b[desc] = b['size'][desc]
             del b['size']
-        ins = buildings.insert().values(b)
-        engine.execute(ins)
+        add_or_update_elem(engine, buildings, b)
 
 def create_items(engine, items, items_src):
     def add_item(it):
-        if 'fluidColor' in it: del i['fluidColor']
+        if 'fluidColor' in it: del it['fluidColor']
         if it['liquid']:
             it['energyValue'] *= 1000
-        ins = items.insert().values(it)
-        return engine.execute(ins)
+        add_or_update_elem(engine, items, it)
 
     for i in items_src.values():
         add_item(i)
+
     add_item({
         "slug": "plutonium-waste",
         "className": "Desc_PlutoniumWaste_C",
