@@ -2,6 +2,7 @@ from satisfactory import *
 from satisfactory.model import Production
 from satisfactory.db import Recipe, db, SatisfactoryDb
 from satisfactory.ui import interactive_production_display
+from satisfactory.game import Game
 import sympy
 import math
 
@@ -63,6 +64,85 @@ def test_production():
     assert math.isclose(prod['Wire'], 10)
     wireProd.set_consuption("Copper Ingot", 20)
     assert math.isclose(prod['Copper Ingot'], -20)
+
+def test_game():
+    init()
+    testGame1 = Game("test 1")
+    testGame1.clear_all()
+    assert testGame1['Iron Ore'] == 0
+
+    testGame2 = Game("test 2")
+    testGame2.clear_all()
+    assert testGame2['Iron Ore'] == 0
+
+    with ResultOfProd("nuclear", margin = 0.0001) as prod:
+        add_recipe('Uranium Fuel Rod in Nuclear Power Plant', 2)
+        produce_with_recipe('Alternate: Uranium Fuel Unit', 'Uranium Fuel Rod')
+        #consume_with_recipe('Alternate: Fertile Uranium', 'Uranium Waste')
+
+    testGame1.register_factory(prod)
+
+    assert testGame1['Iron Ore'] == 0
+    assert testGame1['Water'] == -300 * 2
+    assert testGame1['Uranium Fuel Rod'] == 0
+
+    assert testGame2['Iron Ore'] == 0
+    assert testGame2['Water'] == 0
+
+
+    with ResultOfProd("ref") as ref:
+        ref.add_product('Iron Ore', 4 * 120)
+        ref.produce_with_recipe('Iron Ingot', 'Iron Ingot', 2 * 120)
+
+        ref.add_recipe('Iron Plate', 4)
+        ref.add_recipe('Iron Rod', 6)
+        ref.add_recipe('Screw', 4)
+        ref.add_recipe('Reinforced Iron Plate', 2)
+        ref.add_recipe('Modular Frame', 1)
+
+    testGame1.register_factory(ref)
+
+    assert testGame1['Iron Ore'] == 2 * 120
+    assert testGame1['Water'] == -300 * 2
+    assert testGame1['Modular Frame'] == 2
+
+    assert testGame2['Iron Ore'] == 0
+    assert testGame2['Water'] == 0
+
+    testGame2.register_factory(ref)
+    
+    assert testGame1['Iron Ore'] == 2 * 120
+    assert testGame1['Water'] == -300 * 2
+    assert testGame1['Modular Frame'] == 2
+
+    assert testGame2['Iron Ore'] == 2 * 120
+    assert testGame2['Water'] == 0
+
+    assert "ref" in testGame1.factories()
+
+    with ResultOfProd("ref") as ref:
+        ref.add_product('Iron Ore', 4 * 120)
+        ref.produce_with_recipe('Iron Ingot', 'Iron Ingot', 4 * 120)
+
+        ref.add_recipe('Iron Plate', 4)
+        ref.add_recipe('Iron Rod', 6)
+        ref.add_recipe('Screw', 4)
+        ref.add_recipe('Reinforced Iron Plate', 2)
+
+    testGame1.register_factory(ref)
+    assert testGame1['Iron Ore'] == 0
+    assert testGame1['Modular Frame'] == 0
+    assert testGame1['Water'] == -300 * 2
+
+
+    testGame1.clear_all()
+    testGame2.clear_all()
+    assert testGame1['Iron Ore'] == 0
+    assert testGame1['Iron Ore'] == 0
+
+    testGame1.delete()
+    testGame2.delete()
+
 
 if __name__ == "__main__":
     import pytest

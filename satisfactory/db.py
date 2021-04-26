@@ -148,6 +148,9 @@ def init():
     if _db is None: 
         _db = SatisfactoryDb()
 
+def default_engine():
+    return _db.engine
+
 if __name__ == "__main__":
     db = SatisfactoryDb()
     names = db.search_items_name("wire")
