@@ -317,3 +317,10 @@ def interactiveOfProduction(result: 'Model', name: str, db: 'SatisfactoryDb', ma
         widgets.Label("logs"),
         log
     ])
+
+
+def display_game(mygame):
+    output = widgets.Output()
+    with output:
+        for name in mygame.items():
+            print(f'{name}: {mygame[name]}')
