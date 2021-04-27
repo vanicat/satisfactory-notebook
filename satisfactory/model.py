@@ -70,6 +70,7 @@ class Model:
         self.name = name
         self.margin = margin
         self.db = db
+        self.imported = {}
         
     def construct(self, recipe, q):
         assert recipe in self._recipes
@@ -200,6 +201,28 @@ class Model:
         qa = self.available[name] if name in self.available else 0
         qn = self.needed[name] if name in self.needed else 0
         return qa - qn
+
+    def import_from(self, factory, item, quantity = None, force = False):
+        if quantity is None:
+            quantity = -self[item]
+        if quantity > factory[item] or force:
+            raise ValueError(f'the factory do not have enough {item}: {factory[item]} for {quantity}')
+        if quantity <= 0:
+            return
+        if item in self.imported:
+            self.imported[item] += quantity
+        else:
+            self.imported[item] = quantity
+        if item in self.available:
+            self.available[item] += quantity
+        else:
+            self.available[item] = quantity
+
+    def importation(self, item):
+        if item not in self.imported:
+            return 0
+        return self.imported[item]
+
 
 # In[20]:
 

@@ -8,7 +8,7 @@ __all__ = [
     'db', 'Model', 'interactiveOfProduction', 'ResultOfProd', 'shopping_list',
     'Production', 'construct', 'add_product', 'consume_product', 'add_recipe',
     'consume_with_recipe', 'produce_with_recipe', 'products',
-    'recipes', 'building', 'items', 'init'
+    'recipes', 'building', 'import_from', 'items', 'init'
 ]
 
 def shopping_list(buildings_dict):
@@ -47,6 +47,7 @@ produce_with_recipe = make_function_from_method('produce_with_recipe')
 products = make_function_from_method('products')
 recipes = make_function_from_method('recipes')
 building = make_function_from_method('building')
+import_from = make_function_from_method('import_from')
 
 def items(it):
     return current_result[it]

@@ -53,7 +53,7 @@ class Game():
             items_set = items_set.union(name for name in factory.available)
 
             for name in items_set:
-                amount = factory[name]
+                amount = factory[name] - factory.importation(name)
                 if amount == 0:
                     continue
                 amount = float(amount)
