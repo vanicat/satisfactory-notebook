@@ -98,6 +98,20 @@ class Game():
 
             return result[0]
 
+    def items(self):
+        with self.session() as s:
+            s.add(self.db_game)
+            req = (select(game_db.Items.name)
+                .where(game_db.Items.id == game_db.BuildResult.item_id)
+                .where(game_db.BuildResult.factory_id == game_db.Factory.id)
+                .where(game_db.Factory.game == self.db_game)
+            )
+
+            result = s.execute(req).fetchall()
+
+            return (it[0] for it in result)
+
+
     def factories(self):
         with self.session() as s:
             s.add(self.db_game)
