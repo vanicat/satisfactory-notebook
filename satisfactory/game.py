@@ -49,10 +49,7 @@ class Game():
                 s.delete(result)
             db_fact.build_result = []
 
-            items_set = { name for name in factory.needed }
-            items_set = items_set.union(name for name in factory.available)
-
-            for name in items_set:
+            for name in factory.items():
                 amount = factory[name] - factory.importation(name)
                 if amount == 0:
                     continue

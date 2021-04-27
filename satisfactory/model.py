@@ -132,9 +132,8 @@ class Model:
         
     
     def strs_products(self):
-        products = set(self.available.keys()).union(set(self.needed.keys()))
         result = []
-        for p in products:
+        for p in self.items():
             if p in self.available and p in self.needed:
                 qa = myround(self.available[p])
                 qn = myround(self.needed[p])
@@ -154,9 +153,8 @@ class Model:
         return [ st for _, st in result ]
     
     def products(self):
-        products = set(self.available.keys()).union(set(self.needed.keys()))
         result = []
-        for p in products:
+        for p in self.items():
             if p in self.available and p in self.needed:
                 qa = myround(self.available[p])
                 qn = myround(self.needed[p])
@@ -222,6 +220,13 @@ class Model:
         if item not in self.imported:
             return 0
         return self.imported[item]
+
+    def items(self):
+        for item in self.available:
+            yield item
+        for item in self.needed:
+            if item not in self.available:
+                yield item
 
 
 # In[20]:
