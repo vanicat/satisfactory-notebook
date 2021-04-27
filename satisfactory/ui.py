@@ -324,3 +324,5 @@ def display_game(mygame):
     with output:
         for name in mygame.items():
             print(f'{name}: {mygame[name]}')
+
+    return output
