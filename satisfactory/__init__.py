@@ -1,11 +1,11 @@
 from . import db as sdb
 from .db import db, init
 from .model import Model, Production
-from .ui import interactiveOfProduction
+from .ui import interactiveOfProduction, display_game
 from IPython.display import display
 
 __all__ = [
-    'db', 'Model', 'interactiveOfProduction', 'ResultOfProd', 'shopping_list',
+    'db', 'Model', 'interactiveOfProduction', 'display_game', 'ResultOfProd', 'shopping_list',
     'Production', 'construct', 'add_product', 'consume_product', 'add_recipe',
     'consume_with_recipe', 'produce_with_recipe', 'products',
     'recipes', 'building', 'import_from', 'items', 'init'
