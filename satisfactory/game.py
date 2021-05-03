@@ -25,17 +25,17 @@ class Game():
             s.commit()
 
 
-    def register_factory(self, factory:Model, name = None):
-        def find_or_make_factory(s, name):
-            for f in self.db_game.factories:
-                if f.name == name:
-                    return f
-            f = game_db.Factory(name=name)
-            self.db_game.factories.append(f)
-            s.add(f)
-            s.commit()
-            return f
+    def find_or_make_factory(self, s, name):
+        for f in self.db_game.factories:
+            if f.name == name:
+                return f
+        f = game_db.Factory(name=name)
+        self.db_game.factories.append(f)
+        s.add(f)
+        s.commit()
+        return f
 
+    def register_factory(self, factory:Model, name = None):
         if name is None:
             name = factory.name
 
@@ -44,7 +44,7 @@ class Game():
 
         with self.session() as s:
             s.add(self.db_game)
-            db_fact = find_or_make_factory(s, name)
+            db_fact = self.find_or_make_factory(s, name)
             for result in db_fact.build_result:
                 s.delete(result)
             db_fact.build_result = []
@@ -58,6 +58,21 @@ class Game():
                 result = game_db.BuildResult(amount = amount)
                 item.build_result.append(result)
                 db_fact.build_result.append(result)
+            s.commit()
+
+    def clear_factory(self, factory:Model, name = None):
+        if name is None:
+            name = factory.name
+
+        if name is None:
+            raise ValueError('Factory has no name')
+
+        with self.session() as s:
+            s.add(self.db_game)
+            db_fact = self.find_or_make_factory(s, name)
+            for result in db_fact.build_result:
+                s.delete(result)
+            db_fact.build_result = []
             s.commit()
 
     def clear_all(self):
