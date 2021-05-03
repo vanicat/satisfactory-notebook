@@ -18,7 +18,8 @@ current_result = None
 
 class ResultOfProd(Model):
     """A wraper for model and interactive display of it"""
-    def __init__(self, name = None, margin = 1, db = None):
+    def __init__(self, name = None, margin = 1, db = None, game = None):
+        self.game = game
         if db is None:
             db = sdb.db()
         super().__init__(db, name, margin)
@@ -26,14 +27,14 @@ class ResultOfProd(Model):
     def __enter__(self):
         global current_result
         current_result = self
+        if self.game and self.name:
+            self.game.clear_factory(self)
         return self
     
     def __exit__(self, *args):
-        if self.name is not None:
-            name = self.name.strip()
-        else:
-            name = None
-        display(interactiveOfProduction(self, name, self.db, self.margin))
+        if self.name and self.game:
+            self.game.register_factory(self)
+        display(interactiveOfProduction(self, None, self.db, self.margin))
 
 def make_function_from_method(m):
     return lambda *args, **kwargs: getattr(current_result, m)(*args, **kwargs)
