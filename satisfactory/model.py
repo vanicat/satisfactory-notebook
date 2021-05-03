@@ -203,7 +203,7 @@ class Model:
     def import_from(self, factory, item, quantity = None, force = False):
         if quantity is None:
             quantity = -self[item]
-        if quantity > factory[item] or force:
+        if (not force) and quantity > factory[item]:
             raise ValueError(f'the factory do not have enough {item}: {factory[item]} for {quantity}')
         if quantity <= 0:
             return
