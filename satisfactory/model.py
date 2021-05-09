@@ -221,6 +221,10 @@ class Model:
             return 0
         return self.imported[item]
 
+    def import_all(self, factory):
+        for item in factory.items():
+            self.import_from(factory, item, factory[item])
+
     def items(self):
         for item in self.available:
             yield item
