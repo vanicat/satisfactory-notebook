@@ -49,7 +49,7 @@ products = make_function_from_method('products')
 recipes = make_function_from_method('recipes')
 building = make_function_from_method('building')
 import_from = make_function_from_method('import_from')
-import_from = make_function_from_method('import_all')
+import_all = make_function_from_method('import_all')
 
 def items(it):
     return current_result[it]
