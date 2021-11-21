@@ -18,11 +18,16 @@ current_result = None
 
 class ResultOfProd(Model):
     """A wraper for model and interactive display of it"""
-    def __init__(self, name = None, margin = 1, db = None, game = None):
+    def __init__(self, name = None, margin = 1, db = None, game = None, display = True):
+        """Create a new interactive model
+        
+If game is not None, on exit register the factory
+If display is True, interactively display the factory"""
         self.game = game
         if db is None:
             db = sdb.db()
         super().__init__(db, name, margin)
+        self.display = display
         
     def __enter__(self):
         global current_result
@@ -34,10 +39,57 @@ class ResultOfProd(Model):
     def __exit__(self, *args):
         if self.name and self.game:
             self.game.register_factory(self)
-        display(interactiveOfProduction(self, None, self.db, self.margin))
+        if self.display:
+            display(interactiveOfProduction(self, None, self.db, self.margin))
+        else:
+            imported = {}
+            needed = {}
+            done = set()
+
+            print('product')
+            for item, quantity in self.available.items():
+                if item in self.needed:
+                    quantity = quantity - self.needed[item]
+                
+                if item in self.imported:
+                    quantity = quantity - self.imported[item]
+                    
+                    if quantity <= 0:
+                        imported[item] = self.imported[item]
+                
+                if quantity < 0:
+                    needed[item] = -quantity
+                elif not quantity == 0:
+                    print(f"  {item}: {quantity}~{float(quantity)}")
+                    done.add(item)
+                else:
+                    done.add(item)
+
+            title_printed = False
+            for item, quantity in self.imported.items():
+                if item not in done:
+                    if item in imported:
+                        quantity = needed[item]
+                    if not title_printed:
+                        print('importation')
+                        title_printed = True
+                    print(f"  {item}: {quantity}~{float(quantity)}")
+                    done.add(item)
+
+            title_printed = False
+            for item, quantity in self.needed.items():
+                if item not in done:
+                    if item in needed:
+                        quantity = needed[item]
+                    if not title_printed:
+                        print('needed')
+                        title_printed = True
+                    print(f"  {item}: {quantity}~{float(quantity)}")
 
 def make_function_from_method(m):
-    return lambda *args, **kwargs: getattr(current_result, m)(*args, **kwargs)
+    function = lambda *args, **kwargs: getattr(current_result, m)(*args, **kwargs)
+    function.__doc__ = getattr(ResultOfProd, m).__doc__
+    return function
 
 construct = make_function_from_method('construct')
 add_product = make_function_from_method('add_product')
