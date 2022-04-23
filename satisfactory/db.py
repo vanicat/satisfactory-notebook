@@ -140,7 +140,7 @@ class SatisfactoryDb:
         return shopping_list
 
 _db = None
-def db():
+def db(): 
     return _db
 
 def init():

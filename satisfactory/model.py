@@ -73,7 +73,8 @@ class Model:
         self.imported = {}
         
     def construct(self, recipe, q):
-        assert recipe in self._recipes
+        if recipe not in self._recipes:
+            raise ValueError(f"{recipe} is not a recipe of this factories")
         self._recipes[recipe].build(q)
         
     def add_product(self, p, q):

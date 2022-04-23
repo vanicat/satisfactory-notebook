@@ -46,7 +46,7 @@ If display is True, interactively display the factory"""
             needed = {}
             done = set()
 
-            print('product')
+            print('productuction: ')
             for item, quantity in self.available.items():
                 if item in self.needed:
                     quantity = quantity - self.needed[item]

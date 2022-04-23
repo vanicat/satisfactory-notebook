@@ -153,7 +153,7 @@ def create_recipes(engine, recipes, items, buildings, recipe_ingredients, recipe
             add_related(engine, items, recipe_ingredients, key, ing['item'], ing['amount'])
         if r['forBuilding']:
             for prod in r['products']:
-                assert prod['amount'] == 1
+                assert prod['amount'] == 1, "in create_recipes: the prod amount should be one"
                 ins = (buildings.update()
                     .where(buildings.c.className == prod['item'])
                     .values(recipe = key))

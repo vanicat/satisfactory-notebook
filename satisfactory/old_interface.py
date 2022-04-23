@@ -152,7 +152,8 @@ class ResultFromProd:
         del self.needed[product]
                 
     def add_produced(self, product, quantity):
-        assert product in self.produced
+        if property not in self.produced:
+            raise ValueError(f"add_produced: {property} is not in the produced list")
         old = self.produced[product]
         self.produced[product] = ProducedItem(quantity = old.quantity + quantity, recipe = old.recipe)
         
