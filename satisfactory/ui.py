@@ -7,6 +7,8 @@ from typing import Callable
 from ipywidgets.widgets.widget_box import VBox
 from IPython.display import clear_output
 import ipywidgets as widgets
+
+from satisfactory.game import Game
 from .model import Production, Model
 from .db import Recipe, SatisfactoryDb
 #import matplotlib.pyplot as plt
@@ -319,10 +321,57 @@ def interactiveOfProduction(result: 'Model', name: str, db: 'SatisfactoryDb', ma
     ])
 
 
-def display_game(mygame):
+def display_game(mygame: Game):
+    """Display items global production"""
     output = widgets.Output()
     with output:
         for name in mygame.items():
             print(f'{name}: {mygame[name]}')
 
     return output
+
+def display_game_production(game: Game):
+    """Create an interactive widget to display game production
+    
+You can search for items, select one and see factories that produce and consume it."""
+    prods = game.items_production()
+
+    def search(prefix):
+        return [name for name in prods if prefix in name]
+
+    def on_select(item):
+        print(prods[item])
+
+        opt = [f"<b>production of {item}</b>"]
+        total = 0
+        for usine, q in prods[item]:
+            opt.append(f"{usine}: {q}")
+            total += q
+
+        #opt.append("")
+        opt.append(f"<b>total: {total}</b>")
+
+        output.value = "<br>".join(opt)
+
+    output = widgets.HTML()
+    int_search = interactive_search(search, [
+        {
+            'name': 'select',
+            'callback': on_select
+        }
+    ])
+
+    def observe_options(event):
+        if event['name'] == 'index':
+            on_select(event['owner'].value)
+
+    int_search.choose_options.observe(observe_options)
+
+    result = widgets.HBox([
+        int_search,
+        output
+    ])
+    result.search = int_search
+    result.output = output
+
+    return result
