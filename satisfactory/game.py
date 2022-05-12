@@ -123,10 +123,44 @@ class Game():
 
             return (it[0] for it in result)
 
+    
 
-    def factories(self):
+    def items_production(self):
+        items_builds = {}
+
         with self.session() as s:
             s.add(self.db_game)
-            return [f.name for f in self.db_game.factories]
 
-        
+            for f in s.query(game_db.Factory).filter(game_db.Factory.game == self.db_game).all():
+                for it in f.build_result:
+                    li = items_builds.setdefault(it.item.name, [])
+                    li.append((f.name, it.amount))
+                    #print(f"{f.name} as build {it.amount} of {it.item.name}")
+
+            return items_builds
+
+    @property
+    def factories(self):
+        return Factories(self)
+
+    
+
+
+class Factories:
+    def __init__(self, game: Game) -> None:
+        self.game = game
+
+    def __iter__(self):
+        with self.game.session() as s:
+            s.add(self.game.db_game)
+            return (f for f in self.game.db_game.factories)
+
+    def __getitem__(self, name):
+        # should use select
+        with self.game.session() as s:
+            s.add(self.game.db_game)
+            for f in self.game.db_game.factories:
+                if f.name == name:
+                    return f
+
+        raise KeyError(name)
