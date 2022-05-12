@@ -17,6 +17,12 @@ class Factory(Base):
     name = Column(String)
     game_id = Column(Integer, ForeignKey('game.id'))
     game = relationship(Game, backref=backref('factories', uselist = True))
+    
+    def delete(self, session):
+        """delete the factories and its build result"""
+        for br in self.build_result:
+            session.delete(br)
+        session.delete(self)
 
 class Items(Base):
     __tablename__ = 'items'
