@@ -86,6 +86,17 @@ If display is True, interactively display the factory"""
                         title_printed = True
                     print(f"  {item}: {quantity}~{float(quantity)}")
 
+            title_printed = False
+            for r in self.recipes():
+                if not title_printed:
+                    print('buldings')
+                    title_printed = True
+
+                if r.done < r.plan:
+                    print(f"  {r.recipe.name}: {r.done} of {r.plan} {r.recipe.producedIn}, rest {r.plan - r.done}")
+                else:
+                    print(f"  {r.recipe.name}: {r.done} {r.recipe.producedIn}")
+
 def make_function_from_method(m):
     function = lambda *args, **kwargs: getattr(current_result, m)(*args, **kwargs)
     function.__doc__ = getattr(ResultOfProd, m).__doc__
