@@ -233,6 +233,68 @@ class Model:
             if item not in self.available:
                 yield item
 
+    def graph_canvas(self, size = (500, 400)):
+        from algorithmx import jupyter_canvas
+
+        nodes = {}
+        nbnode = 0
+
+        canvas = jupyter_canvas(buttons=True)
+        canvas.size(size)
+
+        for it in self.items():
+            nbnode += 1
+            nodes[it] = nbnode
+            canvas.node(nbnode).add()
+            canvas.node(nbnode).label(1).add().text(it)
+            canvas.node(nbnode).color('blue')
+            if it in self.available:
+                canvas.node(nbnode).label().text(f"{float(self.available[it]):.0f}")
+            else:
+                canvas.node(nbnode).label().text(f"{float(self.needed[it]):.0f}")
+
+        for r in self.recipes():
+            recipe = 'Rec: ' + r.recipe.name
+            nbnode += 1
+            nodes[recipe] = nbnode
+            canvas.node(nbnode).add()
+            canvas.node(nbnode).label(1).add().text(recipe)
+            canvas.node(nbnode).label().text(f"{(math.ceil(float(r.plan))):.0f}")
+            if r.plan - 0.01 <= r.done:
+                canvas.node(nbnode).color('black')
+            else:
+                canvas.node(nbnode).color('red')
+            for ingr in r.ingredients():
+                name = ingr[0]
+                canvas.edge((nodes[name], nbnode)).directed(True).add()
+
+            for prod in r.products():
+                name = prod[0]
+                canvas.edge((nbnode, nodes[name])).directed(True).add()
+
+        canvas.pause(1)
+        return canvas
+
+    def graph(self, size = (500, 400)):
+        import networkx as nx
+
+        G = nx.Graph()
+
+        G.add_nodes_from(self.items())
+
+        for r in self.recipes():
+            recipe = 'Rec: ' + r.recipe.name
+            G.add_node(recipe)
+            for ingr in r.ingredients():
+                G.add_edge(ingr[0], recipe).add()
+
+            for prod in r.products():
+                G.add_edge(recipe, prod[0]).add()
+
+        return G
+
+
+
 
 # In[20]:
 
